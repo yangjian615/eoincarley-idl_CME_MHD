@@ -1,0 +1,28 @@
+pro stripe_in_aia_images_20110922
+
+	i=40.0
+	cd,'/Users/eoincarley/Data/22sep2011_event/AIA'
+	aia_files = findfile('aia*.fits')
+	;read_sdo,aia_files[0], he_aia_pre, data_aia_pre
+
+	;           Read in data proper AIA         
+	mreadfits_header, aia_files, ind, only_tags='exptime'
+	f = aia_files[where(ind.exptime gt 1.)]
+	
+	read_sdo, f[i], he_aia, data_aia
+	read_sdo, f[i-5], he_aia_pre, data_aia_pre
+
+	data_aia = data_aia/he_aia.exptime 
+	data_aia_pre =  data_aia_pre/he_aia_pre.exptime
+	data = rebin(data_aia - data_aia_pre, 1024, 1024)
+	
+	
+	plot_image,sigrange(data[0:200,750:1023])
+	
+	data[0:107,0:750]=1
+	data[125:1023,0:750]=1
+	plot_image,data
+	
+	;stripe is between x = 107 and 125
+	stop
+END	

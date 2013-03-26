@@ -1,0 +1,66 @@
+pro fit_mass_curve_cor2b,plotting=plotting
+;set_plot,'x'
+cd,'/Users/eoincarley/Data/secchi_l1/20081212/20081212_cor2b/mass_results'
+restore,'COR2B_mht.sav',/verb
+mass = mass_array[1,0:n_elements(mass_array[1,*])-4]
+height = mass_array[0,0:n_elements(mass_array[0,*])-4]
+;height = height[*] - height[0]
+cd,'/Users/eoincarley/Data/secchi_l1/20081212/COR1+COR2'
+restore,'final_B_error.sav',/verb
+
+mass = alog10(mass)
+;seems like extra parameter needs to be added in, 2.5 is best value
+;But this is probably because the mass starts to grow from 2.5 in height
+;i.e.,the occulting disk of cor2 is the zero value
+start = [15.53,2.58,2.9]
+;===============Define constraints================
+q = replicate({fixed:0, limited:[0,0], limits:[0.D,0.D]},3)
+
+q(0).limited(0)=1
+q(0).limits(0) = 15.529
+q(0).limited(1)=1
+q(0).limits(1) = 15.54
+
+q(1).limited(0)=1
+q(1).limits(0) = 2.55
+q(1).limited(1)=1
+q(1).limits(1) = 2.6
+
+q(2).limited(0)=1
+q(2).limited(1)=1
+q(2).limits(0)=2.85
+q(2).limits(1)=3.0
+
+
+;==================================================
+
+fit = 'p[0]*(1-exp(-(x+p[1])/p[2]))'
+fit_params = mpfitexpr(fit,height[*],mass[*],err,yfit=yfit,start,parinfo=q)
+
+
+;loadct,39
+;!p.color=0
+;!p.background=255
+IF keyword_set(plotting) THEN BEGIN
+sun=sunsymbol()
+plot,height/cos(45.0*!DTOR),mass,xtitle='Height [R/R!L'+sun+'!N]',ytitle='log(mass) [g]',$
+yr=[13,16],charsize=0.9,psym=7,xticks=9,xminor=2,xr=[2,20],/xs,xtickv=[2,4,6,8,10,12,14,16,18,20],$
+/noerase,position=[0.5, 0.62, 0.87, 0.79]
+
+;oploterror,height_new,mass_new,B_error_new,psym=1
+
+
+x = dindgen(101)*(20.0/101)
+y = fit_params[0]*(1-exp(-(x+fit_params[1])/fit_params[2]))
+;y = 15.53*(1-exp(-(x+2.58)/2.9))
+oplot,x/cos(45.0*!DTOR),y,color=254
+;xyouts,0.53,0.76,'COR2 B',/normal,charsize=1.0
+
+legend,['COR2 B'],psym=[7],charsize=1.0,box=0,position=[0.51,0.78],/normal
+
+ENDIF
+
+print,'Final asymptotic mass: '+string(10.0^(fit_params[0]))
+print,'Final B error :'+string(B_error[n_elements(B_error)-1])
+
+END

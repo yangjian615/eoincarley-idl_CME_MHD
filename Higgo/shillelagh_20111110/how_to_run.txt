@@ -1,0 +1,8 @@
+How to run SHILLELagh:
+(requires STEREO package)
+
+$sswidl -32
+
+IDL> sw_propagate, '12-jun-2009', trange=[-5,10], tbin=.5, /test,/plot_points, space='omni',/full360
+
+produces a series of plots to the screen. to go forward hit RETURN.

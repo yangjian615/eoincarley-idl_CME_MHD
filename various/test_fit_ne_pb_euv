@@ -1,0 +1,85 @@
+pro test_fit_ne_pb_euv
+
+;Procedure to plot the density profile derived from the Emission Measure Data
+;and the density prodile from the polarized brightness
+
+cd,'/Users/eoincarley/Data/22sep2011_event/LASCO_C2/polarized_brightness'
+restore,'EM_density.sav',/verb ;/Emission Measure density
+restore,'radius_ne_average.sav',/verb
+
+loadct,39
+!p.color=0
+!p.background=255
+
+;plot,rsun,ne_profile,/ylog,charsize=1.5,yr=[1.0e4,1.0e10],xr=[1.0,5.0]
+;oplot,radius,ne_average 
+
+;*******Put in one array*****
+;set_plot,'ps'
+;device,filename = 'ne_EM_pB_fit.ps',/color,/inches,/encapsulate,ysize=7,xsize=6.5,yoffset=7
+
+rsun_orig = rsun
+ne_profile = transpose(ne_profile)
+rsun = rsun[0:n_elements(rsun)-2]
+rsun = [rsun, radius]
+ne_density = [ne_profile, ne_average]
+;window,0
+
+    rsun_orig = rsun_orig
+	plot,rsun_orig,ne_profile,charsize=1.5,psym=6,$
+	xtitle='Heliocentric Distance [R/R!LSun!N]',ytitle='Electron Desnity [cm!U-3!N]';,/ylog;,$
+	xr=[0.0,5.0]
+	
+	
+
+
+	k = 1.38e-16 		;c.g.s
+	m_proton = 1.67e-24 ;grams
+	g = 274.0*100.0  	;cgs
+	T = 2.9e6			;Kelvin
+	R = 6.955e10		;c.g.s
+	H =  (1.0*k*T)/(m_proton*g) 
+    H = H/R
+    rad_sim  = (dindgen(1001)*(1.3 - 1.0)/1000.0) + 1.0
+	y = dblarr(n_elements(rad_sim))
+	y[*] = 2.0e12*exp(-1.00d*(rad_sim[*])/H)
+
+oplot,rad_sim,y,color=240
+stop
+
+q = replicate({fixed:0, limited:[0,0], limits:[0.D,0.D]}, 2)
+
+q(0).limited(0)=1
+q(0).limits(0) = 1.0e9
+q(0).limited(1)=1
+q(0).limits(1) = 5.0e12
+
+q(1).limited(0)=1
+q(1).limits(0) = 0.1
+q(1).limited(1)=1
+q(1).limits(1) = 0.2
+
+start = [1.0e11, 0.108]
+fit =  'p[0]*exp(-1.0d*(x)/p[1])'
+fit_params = mpfitexpr(fit, rsun_orig, ne_profile, err, yfit=yfit, start, parinfo=q)
+
+
+
+;rad_sim  = (dindgen(1001)*(0.3)/1000.0)
+ne_sim_HE = dblarr( n_elements(rad_sim) )
+ne_sim_HE[*] = fit_params[0.0]*exp(-1.0d*(rad_sim)/fit_params[1.0])
+
+oplot,rad_sim, ne_sim_HE
+
+
+
+print,'Temperature from HE model of actve region: ' +$
+	string(	(fit_params[1]*R)*m_proton*g/(1.0*k)/1.0e6  )+' MK'
+print,'Number Density of active region: '+string(ne_sim_HE[0])+' [cm!U-3!N]'
+
+
+
+	
+	
+	
+END	

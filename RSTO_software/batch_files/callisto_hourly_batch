@@ -1,0 +1,33 @@
+cd, 'C:\MyIDLcodes'
+.rnew callisto_hourly_windows_v2
+callisto_hourly_windows_v2,/backg
+
+
+cd, 'C:\MyIDLcodes'
+.rnew system_status
+system_status
+
+
+cd, 'C:\MyIDLcodes'
+.rnew callisto_goes_v2
+callisto_goes_v2
+
+
+cd, 'C:\MyIDLcodes'
+.rnew create_png_v2.pro
+create_png_v2
+
+
+cd,'C:\Inetpub\wwwroot\callisto\data\realtime\fts\high_freq
+spawn,'move /y *.png* C:\Inetpub\wwwroot\callisto\data\realtime\png\high_freq'
+
+cd,'C:\Inetpub\wwwroot\callisto\data\realtime\fts\low_freq
+spawn,'move /y *.png* C:\Inetpub\wwwroot\callisto\data\realtime\png\low_freq'
+
+cd,'C:\Inetpub\wwwroot\callisto\data\realtime\fts\mid_freq
+spawn,'move /y *.png* C:\Inetpub\wwwroot\callisto\data\realtime\png\mid_freq'
+
+cd, 'c:\Inetpub\wwwroot\webcam'
+$convert -gravity northeast -pointsize 16 -annotate 0 %Date:~-4,4%/%Date:~-7,2%/%Date:~-10,2%-%time:~0,2%:%time:~3,2%:%time:~6,2%-www.rosseobservatory.ie -undercolor white webcam.bmp webcam.gif
+
+exit

@@ -1,0 +1,76 @@
+pro analyse_typeII_20110607_point_and_click
+
+
+cd,'/Users/eoincarley/Data/CALLISTO/20110607/Fits'
+radio_spectro_fits_read,'BIR_20110607_062400_10.fit', z_zoom, x_zoom, y_zoom
+
+;z_zoom = MinEnvBack( z_zoom, 1000.0, 'X' )
+z_zoom = constbacksub(z_zoom, /auto)
+window,0,xs=800,ys=1000
+!p.multi=[0,1,1]
+loadct,8
+reverse_colors
+
+a = anytim(file2time('20110607_062555'),/utim)
+b = anytim(file2time('20110607_062620'),/utim)
+
+
+freq_sim = (dindgen(100)*(90.0 - 40.0)/99.0 ) +40.0
+tim_sim = dblarr(n_elements(freq_sim))
+start_index = closest(x_zoom, a)
+stop_index = closest(x_zoom, b)
+;FOR i = start_index,  stop_index DO BEGIN 
+		spectro_plot, z_zoom > (0.0) < 30.0  ,x_zoom, y_zoom,$
+		/xs, xr=[a,b], /ys, yr=[20,90] , charsize=2, xticks=2
+		point,t,f
+		;tim_sim[*] = x_zoom[i]
+		;plots,tim_sim,freq_sim
+		;plot, y_zoom, smooth(z_zoom[i,*],4), xr=[40,90], charsize=2.0
+		
+		;point,f,junk
+		;f0  = closest(y_zoom, f[0])
+		;f1  = closest(y_zoom, f[1])
+		;z_sec = smooth(z_zoom[i,f1:f0],4)
+		;f_sec = y_zoom[f1:f0]
+		;plot, f_sec, z_sec, charsize=2.0
+		
+
+		
+window,1,xs=800,ys=1000		
+utplot,t,f,/xs,/ys,psym=1 ,charsize=2.0	
+f_err = dblarr(n_elements(f))
+f_err[*] = 2.0
+oploterror,t,f,f_err,psym=1
+
+t_sec = t[*] - t[0]
+result = linfit(t_sec,f,measure_errors = f_err)
+t_sim = (dindgen(100.0)*(t_sec[n_elements(t_sec)-1] - t_sec[0])/99.0) + t_sec[0]
+f_sim = dblarr(n_elements(t_sim))
+f_sim[*] = result[0] + result[1]*t_sim[*]
+
+oplot,t_sim+t[0],f_sim
+
+print,result
+
+rsun = 6.955e5
+h = dblarr(n_elements(f))
+h = 4.32/alog10( ((f/1.0)*1.0e6)^2.0/3.385e12) ;Newkirk
+window,2
+utplot,t,h,/xs,/ys,psym=1 ,charsize=2.0	
+
+
+t_sec = t[*] - t[0]
+result = linfit(t_sec,h)
+t_sim = (dindgen(100.0)*(t_sec[n_elements(t_sec)-1] - t_sec[0])/99.0) + t_sec[0]
+h_sim = dblarr(n_elements(t_sim))
+h_sim[*] = result[0] + result[1]*t_sim[*]
+
+oplot,t_sim+t[0],h_sim
+
+print,result[1]*rsun
+stop
+;ENDFOR	
+
+
+
+END	

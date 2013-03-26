@@ -1,0 +1,92 @@
+pro rfi_tags_20110922
+
+;Try and remove RFI from mid dynamic spectra
+
+
+t1 = anytim(file2time('20110922_104100'),/utim)
+t2 = anytim(file2time('20110922_104400'),/utim)
+
+;***************  		CALLISTO DATA		********************;
+cd,'/Users/eoincarley/Data/CALLISTO/20110922'
+
+files = findfile('*.fit')
+radio_spectro_fits_read,files[1], mid1data, m1time, mfreq
+radio_spectro_fits_read,files[3], mid2data, m2time, mfreq
+
+;Put in the FM band blackout
+mid_FM_index = where(mfreq lt 112.0)
+mid_data= [mid1data, mid2data]
+mid_times = [m1time, m2time]
+mid_data_bg = constbacksub(mid_data, /auto)
+
+;mid_data_bg = constbacksub(mid_data, /auto)
+mid_data_bg[*,  mid_FM_index[0] : mid_FM_index[n_elements(mid_FM_index)-1] ] = -10.0
+
+!p.multi=[0,1,2]
+!p.charsize=1.5
+device, retain=2
+loadct,5
+window,0,xs=800,ys=1000
+stretch, 51, 230, 1.2
+
+
+spectro_plot, mid_data_bg*2.0 > (-30.0) < 50.0, mid_times, mfreq, /xs, $
+xr=[t1,t2], yr=[200,100], /ys,$
+tick_unit = 5.0*60.0, xtitle='Time (UT)', ytitle='Frequency (MHz)', title='Raw'
+
+;window,1
+;shade_surf,mid_data_bg, charsize=3
+
+indeces = where(mid_data_bg gt 2.0*stdev(mid_data_bg))
+rfi_xy = array_indices(mid_data_bg, indeces)
+;set_line_color
+;plots,mid_times(rfi_xy[0,*]),mfreq(rfi_xy[1,*]), psym=3, color=3
+
+
+;--------------Plot up RFI points-------------------;
+
+;loadct,1
+;window,1
+;spectro_plot, abs(sobel(mid_data_bg)) >20 <100, mid_times, mfreq, /xs, $
+;xr=[t1,t2], charsize=1.0, yr=[150,100], /ys,$
+;tick_unit = 5.0*60.0, xticklen=-0.03, yticklen=-0.01, xtitle='Time (UT)' 
+
+rfi_array = abs(sobel(mid_data_bg)) >20 <100
+;set_line_color
+indeces = where(rfi_array gt 3.0*stdev(rfi_array))
+rfi_xy = array_indices(rfi_array, indeces)
+;plots,mid_times(rfi_xy[0,*]),mfreq(rfi_xy[1,*]), psym=3, color=3
+
+
+
+
+
+;---------------------Do a 10 point average around every RFI point ---------------;
+mid_data_new = mid_data
+FOR i = 0.0, n_elements(rfi_xy[0,*])-1 DO BEGIN
+	
+	x_index = rfi_xy[0,i]
+	y_index = rfi_xy[1,i]
+	print,x_index, y_index
+	;mid_data_new[(x_index-5)>0.0:(x_index+5)<7199, (y_index-5)>0.0:(y_index+5)<199] = mean(mid_data)
+	surround = 10
+	section = mid_data_new[(x_index-surround)>0.0:(x_index+surround)<7199, (y_index-surround)>0.0:(y_index+surround)<199]
+	mid_data_new[(x_index-1)>0.0:(x_index+1)<7199, (y_index-1)>0.0:(y_index+1)<199] = mean(section >0.0)
+ENDFOR
+mid_data_bg = constbacksub(mid_data_new, /auto)
+mid_data_bg[*,  mid_FM_index[0] : mid_FM_index[n_elements(mid_FM_index)-1] ] = -10.0
+
+;window,10
+;loadct,5
+;stretch, 51, 230, 1.2
+
+
+spectro_plot, mid_data_bg*2.0 > (-15.0) < 30.0, mid_times, mfreq, /xs, $
+xr=[t1,t2], yr=[200,100], /ys,$
+tick_unit = 5.0*60.0, xtitle='Time (UT)' , ytitle='Frequency (MHz)',$
+title='RFI Removed'
+
+x2png,'RFI_removal.png'
+
+stop
+END

@@ -1,0 +1,54 @@
+pro typeIII_speed_20110922
+
+t1 = anytim(file2time('20110922_102000'),/utim)
+t2 = anytim(file2time('20110922_112000'),/utim)
+loadct,5
+cd,'/Users/eoincarley/Data/22sep2011_event/WAVES'
+xleft = 0.1
+xright = 0.9
+!p.charsize=1.5
+window,0,xs=600,ys=1000
+
+restore,'WAVES_RAD1_20110922.sav',/verb
+spectro_plot, smooth(arrayb,3) , time_array, freq, /xs, /ys,  $
+position=[xleft, 0.5, xright, 0.9], /normal, /noerase, $
+xtickname=[' ', ' ', ' ', ' ', ' ', ' ', ' '], /ylog, xr=[t1,t2], yr=[1.0, 0.01],$
+ytickv=[0.1,1.0]
+
+restore,'WAVES_RAD2_20110922.sav',/verb
+spectro_plot, smooth(arrayb,3) , time_array, freq, /xs, /ys,  $
+position=[xleft, 0.1, xright, 0.5], /normal, /noerase, /ylog, xr=[t1, t2],$
+ytickv=[10.0], xticklen=-0.03, xminor=2
+
+point, time, freq_p, /data
+window,1, xs=500, ys=500
+utplot, time, freq_p, xtitle='Time (UT)', ytitle='Frequency (MHz)'
+
+;--------------Calculate Density and Distance --------------
+
+n_e = (freq_p*1.0e6/8980.0)^2.0
+npoints=1000
+rad_sim = (dindgen(1000)*(215-1.0)/(npoints-1))+1.0
+sw_mann, rad_sim, n = nsim
+rad_ne = interpol(rad_sim, nsim, n_e)
+
+window, 2, xs=500, ys=500
+utplot, time, rad_ne, xtitle='Time (UT)', ytitle='Height (Rsun)'
+result = linfit(time, rad_ne, yfit=yfit)
+
+tim_sim = (dindgen(1000)*(time[n_elements(time)-1]- time[0])/(npoints-1)) + time[0]
+radfit = result[0] + result[1]*tim_sim
+oplot,tim_sim,radfit, linestyle=1
+
+;---------- Calculate Velocity -----------;
+rsun = 6.955e8
+c = 2.98e8
+velocity = result[1]*rsun
+print,'Velocity of beam : '+string(velocity/1000.0)+' km/s'
+print,'Velocity of beam : '+string(velocity/c)+' c'
+me = 1.6e-27
+kine_J = 0.5*me*(velocity^2.0) ;J
+kine_ev = kine_J/1.6e-19
+
+stop
+END

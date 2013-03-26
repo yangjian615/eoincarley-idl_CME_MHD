@@ -1,0 +1,31 @@
+plot,time_s,height,psym=1,thick=2,yr = [1.1,1.85],xr=[0,600],xtitle = 'Time after first detection of burst (s)',$
+ytitle ='Height (R/R'+sunsymbol()+')',charsize=1.5,title='Newkirk height of burst vs. time',ytickinterval=0.1,xtickinterval=60
+
+legend,['Newkirk Height','linear fit (711 km.s!E-2!N)'],linestyle=[0,0],psym=[1,0],charsize=1.5 
+
+plot,time_s[0:3],vel,xr=[-5,150],title = 'Velocity vs. time produce from the height time fit of TypeII20110312',$
+ytitle = 'Velocity (km/s)', xtitle='Time from first detection of TypeII (s)',charsize=1.5,yr=[350,1500]
+
+legend,['First 4 points only']
+
+
+lin = linfit(time_s[0:3],height[0:3]
+start=[lin[0],lin[1],1e-6]
+err = delta_r
+fit = 'p[0]+p[1]*x+p[2]*x^2'
+fit_params = mpfitexpr( fit, time_s[0:3], height[0:3], err, yfit = yfit,start)
+
+plot,time_s[0:3],height[0:3],psym=1,xtitle='Time after first detection of burst (s)',ytitle ='Height (R/Rsun)',charsize=1.5,xr=[-5,150],yr=[1.1,1.4]
+
+
+time = dindgen(150)
+y = fit_params[0]+fit_params[1]*time+fit_params[2]*time^2
+
+plot,time_s[0:3],height[0:3],psym=1,xtitle='Time after first detection of burst (s)',ytitle ='Height (R/Rsun)',charsize=1.5,xr=[-5,150],yr=[1.1,1.45],'Height vs. time, first 4 points'
+oplot,time,y,linestyle=2  
+oploterror,time_s[0:3],height[0:3],err,psym=1 
+oplot,time_s,ylin,linestyle=0
+
+legend,['Newkirk Height','Linear fit','2nd degree polynomial fit'],linestyle=[0,0,2],psym=[1,0,0],charsize=1
+
+spectro_plot,bytscl(zback,-5,15),x_master,y_master,/xs,/ys,xr=

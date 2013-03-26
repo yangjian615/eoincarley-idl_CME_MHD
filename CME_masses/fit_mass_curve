@@ -1,0 +1,120 @@
+pro fit_mass_curve
+set_plot,'x'
+cd,'/Users/eoincarley/Data/secchi_l1/20081212/COR1+COR2'
+restore,'COR1and2B_mass_height_time.sav',/verb
+height = master1[2,*]
+zeros = where(height eq 0.0)
+remove,zeros,height
+height_new = [height[0:12],height[22:n_elements(height)-1]]
+
+time = master1[0,*]
+zeros = where(time eq 0.0)
+remove,zeros,time
+
+mass = master1[1,*]
+zeros = where(mass eq 0.0)
+remove,zeros,mass
+;mass values start to rise abve exp trend at 12th element
+;returns om the 22nd element
+;take out elemenents 12:22
+mass_new = [mass[0:12],mass[22:n_elements(mass)-1]]
+
+
+;mass=alog10(mass)
+restore,'final_B_error.sav',/verb
+B_error_new = [B_error[0:12],B_error[22:n_elements(B_error)-1]]
+height_new = height_new[*]-height_new[0]
+
+
+
+
+start = [4.0e15,2.0]
+;===============Define constraints================
+q = replicate({fixed:0, limited:[0,0], limits:[0.D,0.D]},2)
+
+q(0).limited(0)=1
+q(0).limits(0) = 2.5e15
+q(0).limited(1)=1
+q(0).limits(1) = 6.0e15
+
+q(1).limited(0)=1
+q(1).limited(1)=1
+q(1).limits(0)=1.0
+q(1).limits(1)=20.0
+
+
+;==================================================
+
+fit = 'p[0]*(1-exp(-x/p[1]))'
+fit_params = mpfitexpr(fit,height_new[*],mass_new[*],err,yfit=yfit,start,parinfo=q)
+
+
+loadct,39
+!p.color=0
+!p.background=255
+
+plot,height_new,mass_new,xtitle='Height [R_sun]',ytitle='Mass [g]',$
+yr=[1.0e13,1.0e16],charsize=1.5,psym=1,/ylog
+oploterror,height_new,mass_new,B_error_new,psym=1
+
+
+x = dindgen(101)*(20.0/101)
+y = fit_params[0]*(1-exp(-(x)/fit_params[1]))
+oplot,x,y,color=254
+stop
+
+
+
+
+
+;=======================================
+;=============Same for STRA================
+;=======================================
+restore,'COR1and2A_mass_height_time.sav',/verb
+height = master2[2,*]
+zeros = where(height eq 0.0)
+remove,zeros,height
+
+time = master2[0,*]
+zeros = where(time eq 0.0)
+remove,zeros,time
+
+mass = master2[1,*]
+zeros = where(mass eq 0.0)
+remove,zeros,mass
+;mass=alog10(mass)
+restore,'final_A_error.sav',/verb
+start = [4.0e15,1.2,8.0]
+
+;===============Define constraints================
+q = replicate({fixed:0, limited:[0,0], limits:[0.D,0.D]},3)
+
+q(0).limited(0)=1
+q(0).limits(0) = 3.0e15
+q(0).limited(1)=1
+q(0).limits(1) = 5.0e15
+
+q(2).limited(0)=1
+q(2).limited(1)=1
+q(1).limits(0)=2.0
+q(2).limits(1)=15.0
+
+q(1).limited(0)=1
+q(1).limits(0)=1.1
+;==================================================
+
+fit = 'p[0]*(1-exp(-(x-p[1])/p[2]))
+fit_params = mpfitexpr(fit,height[*],mass[*],err,yfit=yfit,start,parinfo=q)
+
+loadct,39
+!p.color=0
+!p.background=255
+oplot,height,mass,psym=5
+oploterror,height,mass,A_error,psym=5
+
+x = dindgen(101)*(20.0/101)
+y = fit_params[0]*(1-exp(-(x-fit_params[1])/fit_params[2]))
+oplot,x,y,color=60
+stop
+
+END

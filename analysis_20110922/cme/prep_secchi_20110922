@@ -1,0 +1,12 @@
+pro prep_secchi_20110922
+
+cd,'/Users/eoincarley/Data/22sep2011_event/secchi/COR1/b/24540411'
+
+files = findfile('*.fts')
+
+FOR i = 0,n_elements(files)-1,3 DO BEGIN
+	secchi_prep,files[i:i+2],/write_fits,/polariz_on,/calfac_on
+
+ENDFOR
+
+END

@@ -1,0 +1,106 @@
+pro ace_mag_20110607
+
+; Put CME arrival time here. A vertical bar will be drawn through the plots at this time
+t_arriv_cme = '20110610_094500'
+
+cd,'/Users/eoincarley/Data/CALLISTO/20110607/ACE_data'
+
+readcol,'ACE_MAG_Data.txt', YYYY, DOA, hr, mi, s, SCclock, Bt, Bmag, Bgse_x, Bgse_y, Bgse_z, skipline=44.0
+
+month = dblarr(n_elements(DOA))
+day = dblarr(n_elements(DOA))
+utim = dblarr(n_elements(DOA))
+
+FOR i=0.0,n_elements(DOA)-1 DO BEGIN
+	CALDAT, JULDAY(1, DOA[i], YYYY[i]), mo, d
+	month[i] = mo
+	day[i] = d
+	ex = fix([ hr[i], mi[i], s[i], [0.0], day[i], month[i], yyyy[i] ])
+	utim[i] = anytim(ex,/utim)
+ENDFOR	
+
+loadct,39
+!p.color=0
+!p.background=255
+!p.charsize=1.0
+
+set_plot,'ps'
+device,filename = 'ace_mag_field.eps',/color,/inches,/encapsulate,ysize=7,xsize=4.5,yoffset=7
+
+tstart = anytim(file2time('20110609_000000'),/utim)
+tend = anytim(file2time('20110611_000000'),/utim)
+
+pos1 = 0.15
+pos3 = 0.935
+smooth_param=1.0
+;************** B total **************
+utplot,utim,smooth(Bmag,smooth_param),/ys,ytitle='|B| [nT]',color=50,$
+/xs, xtitle=' ',xticks=5,xtickname=[' ',' ',' ',' ',' ',' ',' '],xr=[tstart,tend],$
+position=[pos1, 0.78, pos3, 0.99],/normal,/noerase
+draw_constants,t_arriv_cme
+
+
+;************** Bx **************
+zeros = dblarr(n_elements(utim))
+utplot,utim,smooth(Bgse_x,smooth_param),/xs,/ys,yr=[-10.0,10.0],ytitle='B!Lx!N [nT]',color=50,$
+xtitle=' ',xticks=5,xtickname=[' ',' ',' ',' ',' ',' ',' '],xr=[tstart,tend],$
+position=[pos1, 0.56, pos3, 0.77],/normal,/noerase
+oplot,utim,zeros
+draw_constants,t_arriv_cme
+
+
+;************** By **************
+utplot,utim,smooth(Bgse_y,smooth_param),/ys,yr=[-10.0,10.0],ytitle='B!Ly!N [nT]',color=50,$
+/xs,xtitle=' ',xticks=5,xtickname=[' ',' ',' ',' ',' ',' ',' '],xr=[tstart,tend],$
+position=[pos1, 0.34, pos3, 0.55],/normal,/noerase
+oplot,utim,zeros
+draw_constants,t_arriv_cme
+
+
+;************** Bz **************
+utplot,utim,smooth(Bgse_z,smooth_param),/ys,yr=[-10.0,10.0],ytitle='B!Lz!N [nT]',color=50,$
+/xs,tick_unit=43200.0,xr=[tstart,tend],xtitle=' ',$
+position=[pos1, 0.12, pos3, 0.33],/normal,/noerase
+oplot,utim,zeros
+draw_constants,t_arriv_cme
+;xtitle='Start Time: ('+anytim(tstart,/yoh,/trun)+') UT',
+
+xyouts,0.08,0.065,'09-June',charsize=1.0,/normal
+xyouts,0.47,0.065,'10-June',charsize=1.0,/normal
+xyouts,0.855,0.065,'11-June',charsize=1.0,/normal
+xyouts,0.46,0.04,'Time in UT',charsize=1.0,/normal
+
+
+xyouts,0.87,0.96,'(a)',charsize=1.0,/normal
+xyouts,0.87,0.74,'(b)',charsize=1.0,/normal
+xyouts,0.87,0.52,'(c)',charsize=1.0,/normal
+xyouts,0.87,0.30,'(d)',charsize=1.0,/normal
+device,/close
+set_plot,'x'
+
+END
+
+
+
+pro draw_constants,t_arriv_cme
+
+B_range=(dindgen(100)*(14.0+12.0)/99.0)-12.0
+tim_a = dblarr(n_elements(b_range))
+tim_a[*] = anytim(file2time('20110609_120000'),/utim)
+tim_b = dblarr(n_elements(b_range))
+tim_b[*] = anytim(file2time('20110610_000000'),/utim)
+tim_c = dblarr(n_elements(b_range))
+tim_c[*] = anytim(file2time('20110610_120000'),/utim)
+tim_d = dblarr(n_elements(b_range))
+tim_d[*] = anytim(file2time('20110609_000000'),/utim)
+
+tim_cme = dblarr(n_elements(b_range))
+tim_cme[*] = anytim(file2time(t_arriv_cme),/utim)
+
+oplot,tim_a,B_range,linestyle=1
+oplot,tim_b,B_range,linestyle=1
+oplot,tim_c,B_range,linestyle=1
+oplot,tim_d,B_range,linestyle=1
+oplot,tim_cme,B_range,linestyle=0,thick=4
+
+END

@@ -1,0 +1,4 @@
+<b>Callisto Spectrometer Status: </b><br><br>
+10-100 MHz: On <br>
+100-200 MHz: On <br>
+200-400 MHz: On

@@ -1,0 +1,3 @@
+for f in 'ls *.ps'; do
+	convert -rotate -90 -density 200 $f -flatten ${f%.*}.png;
+done	

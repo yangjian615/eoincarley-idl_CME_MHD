@@ -1,0 +1,92 @@
+pro plot_band_splitting_20110922
+
+t1 = anytim(file2time('20110922_104100'),/utim)
+t2 = anytim(file2time('20110922_104240'),/utim)
+
+;***************  		CALLISTO DATA		********************;
+cd,'/Users/eoincarley/Data/CALLISTO/20110922'
+
+files = findfile('*.fit')
+radio_spectro_fits_read,files[0], low1data, l1time, lfreq
+radio_spectro_fits_read,files[2], low2data, l2time, lfreq
+radio_spectro_fits_read,files[1], mid1data, m1time, mfreq
+radio_spectro_fits_read,files[3], mid2data, m2time, mfreq
+
+
+;Put in the FM band blackout
+low_FM_index = where(lfreq gt 90.0)
+low_data = [low1data, low2data]
+low_times = [l1time, l2time]
+
+;Put in the FM band blackout
+mid_FM_index = where(mfreq lt 112.0)
+mid_data= [mid1data, mid2data]
+mid_times = [m1time, m2time]
+mid_data_bg = constbacksub(mid_data, /auto)
+low_data_bg = constbacksub(low_data, /auto)
+loadct,39
+!p.color=0
+!p.background=255
+Device, RETAIN=2
+!p.multi=[0,1,2]
+;window,0,xs=700,ys=1000
+
+
+loadct,5
+stretch, 51, 230, 1.1
+
+
+spectro_plot, smooth(low_data_bg,3) > (-30.0) < 100.0, low_times, lfreq, /xs, /ys, $
+xr=[t1,t2], charsize=1.5, yr=[90,20], yticks=7, yminor=2, $
+xticklen=-0.01, yticklen=-0.01, ytitle='Frequency (MHz)'
+
+stop
+
+cd,'/Users/eoincarley/Data/CALLISTO/20110922/band_splitting/gauss_fits'
+;---------------Fundamental-------------------
+readcol,'fund1_gauss.txt', tfun1, a0, afund1, fund_width1, a3, sigma0, fund_sigma1, sigma2, sigma3,$
+	format = 'A,D,D,D,D,D,D,D,D'
+set_line_color
+plots,anytim(tfun1,/utim), afund1, psym=1, symsize=2, color=4
+
+readcol,'fund2_gauss.txt', tfun2, a0, afund2, fund_width2, a3, sigma0, fund_sigma2, sigma2, sigma3,$
+	format = 'A,D,D,D,D,D,D,D,D'
+plots,anytim(tfun2,/utim), afund2, psym=1, symsize=2, color=4
+
+;----------------Harmonic ------------------------
+
+readcol,'har1_gauss.txt', thar1, a0, ahar1, har_width1, a3, sigma0, har_sigma1, sigma2, sigma3, $
+	format = 'A,D,D,D,D,D,D,D,D'
+plots,anytim(thar1,/utim), ahar1, psym=1, symsize=2, color=4	
+	
+readcol,'har2_gauss.txt', thar2, a0, ahar2, har_width2, a3, sigma0, har_sigma2, sigma2, sigma3, $
+	format = 'A,D,D,D,D,D,D,D,D'
+plots,anytim(thar2,/utim), ahar2, psym=1, symsize=2, color=4	
+
+
+
+;window,1
+set_line_color
+utplot,anytim(thar1,/utim), ahar2/ahar1, /xs, /ys, yr=[1.1,1.5], psym=6, charsize=1.5, $
+ytitle='Band Splitting Ratio', color=6
+oploterror,anytim(thar1,/utim), ahar2/ahar1, sqrt(har_sigma1^2.0+har_sigma2^2.0), psym=6,color=6
+
+oplot,anytim(tfun1,/utim), afund2/afund1, psym=1, color=5
+oploterror,anytim(tfun1,/utim), afund2/afund1, sqrt(fund_sigma1^2.0+fund_sigma2^2.0), psym=6,color=5
+
+legend,['Fundamental','Harmonic'],psym=[1,6],color=[5,6],box=0, charsize=1.5
+
+
+average_bs_har = mean(ahar2/ahar1)
+av_bs_err_har = mean(sqrt(har_sigma1^2.0+har_sigma2^2.0))
+average_bs_fund = mean(afund2/afund1)
+av_bs_err_fund = mean(sqrt(fund_sigma1^2.0+fund_sigma2^2.0))
+print,'--------------------------------'
+print,''
+print,'Average band splitting for harmonic: '+string(average_bs_har)+' +/- '+string(av_bs_err_har)
+print,'Average band splitting for fundamental: '+string(average_bs_fund)+' +/- '+string(av_bs_err_fund)
+print,''
+print,'--------------------------------'
+x2png,'band_splitting_ratio20110922.png'
+
+END
