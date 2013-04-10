@@ -1,4 +1,4 @@
-function masses_width_error3,height,angle
+function masses_width_error3, height, angle
 
 ;Input a range of height values and the upper limit to the errors on the masses come out
 ;Uses the angular width formula in Byrne et al. 2010.
@@ -7,11 +7,11 @@ function masses_width_error3,height,angle
 
 
 cme_height = height  ;Rsun (variable)
-ang_width = angle;2*(26*(cme_height^0.22) );degrees
+ang_width = angle    ;2*(26*(cme_height^0.22) );degrees
 
 e_mass = double(9.109e-28) ;grams
-cme_mass=2.0e15    ;grams
-rsun=6.955e10
+cme_mass=2.0e15    		   ;grams
+rsun= 6.955e10			   ;cme
 nsteps_h=200
 
 
@@ -23,7 +23,7 @@ nsteps_h=200
 		
 	start_angle = -1.0*(ang_width/2.0)
 	stop_angle = 1.0*(ang_width/2.0)
-	angle_steps =0.1;
+	angle_steps = 0.1;
 	
 	num_elecs=1.0d
 	apparent_e_total=0.0d
@@ -44,7 +44,7 @@ nsteps_h=200
 			       			
 			num_elecs=double(e_per_cm2)*double(arc_area)
 			;eltheory,j*cos(!pi*i/180.0),float(i),d,B_per_e
-			eltheory,j,float(i),d,B_per_e
+			eltheory, j, float(i), d, B_per_e
 		   
 		    apparent_B= (B_per_e*num_elecs)	
 		    total_elecs = total_elecs+num_elecs
@@ -73,6 +73,6 @@ nsteps_h=200
 ;print,'CME mass underestimation is: '+string( (1-(apparent_e_total/num))*100.0)+' percent at '+$
 ;string(ang_width,format='(I3.2)')+' degree angular width along LOS'
 print,'CME width: '+string(ang_width)+' (degrees)'
-print,'Mass unserestimation of '+string(error)+' %'
+print,'Mass underestimation of '+string(error)+' %'
 return,error
 END		

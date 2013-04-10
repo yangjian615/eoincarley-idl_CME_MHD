@@ -5,7 +5,7 @@ pro do_prep_secchi, check_seq = CHECK_SEQ
 
 ;Badly written could do with cleaning up.
 
-files = findfile('*s*.fts')
+files = findfile('*n*.fts')
 
 ;If image are in polarization 'sequence' or 'normal' images check to see the three 
 ;polarizations are there.
@@ -21,14 +21,13 @@ files = findfile('*s*.fts')
 		index = sort([hdr0.polar, hdr1.polar, hdr2.polar])
 		print,polar_seq
 		IF polar_seq[index[0]] eq [0.0] and polar_seq[index[1]] eq [120.0] and polar_seq[index[2]] eq [240.0] THEN BEGIN
-			secchi_prep,files[i:i+2], hdr, img, /rotate_on, /polariz_on, /write_fits
+			secchi_prep,files[i:i+2], hdr, img, /rotate_on, /polariz_on, /pB, /write_fits
     	ENDIF ELSE BEGIN
     		print,''
     		print,'Polarization image missing for '+ hdr.date_obs
     		print,''
     		BREAK
     	ENDELSE
-    	stop
 	ENDFOR
 		
 		

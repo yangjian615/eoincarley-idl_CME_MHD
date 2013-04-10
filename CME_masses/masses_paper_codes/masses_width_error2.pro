@@ -5,7 +5,7 @@ pro masses_width_error2
 
 e_mass = double(9.109e-28) ;grams
 cme_mass=2.0e15    ;grams
-cme_height = 18.0  ;Rsun
+cme_height = 1.2  ;Rsun
 mass_error = dblarr(2,180)
 
 FOR k=0.0,179.0 DO BEGIN ;where k is the angle

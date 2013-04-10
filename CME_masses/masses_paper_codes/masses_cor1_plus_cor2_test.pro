@@ -1,64 +1,10 @@
-function add_masses,array1,array2,A=A,B=B
-
-start_of_add = closest(array1[2,*], array2[2,0])
-
-print,anytim(array1(2,start_of_add),/yoh)
-
-q = size(array1)
-q = q[2]
-end_of_add = closest(array2[2,*], array1[2,q-1])
-
-;add section here that replaces masses in array1 and array2 with the mean of the mass
-
-elements = start_of_add + q
-master_array = dblarr(3,elements)
-
-master_array[1,0:start_of_add-1]=array1[1,0:start_of_add-1]
-master_array[0,0:start_of_add-1]=array1[2,0:start_of_add-1]
-master_array[2,0:start_of_add-1]=array1[0,0:start_of_add-1]
-cor1_indices=[0]
-
-FOR i=0, end_of_add DO BEGIN
-
-    index = closest(array1[2,*], array2[2,i])
-    master_array[1,index] = array1[1,index]+array2[1,i]
-    master_array[0,index] = array2[2,i] ;the COR2 times
-    master_array[2,index] = array2[0,i] ;the COR2 heights
-    
-    cor1_indices=[cor1_indices,index];the indices of the COR1 data that are added to COR2 
-    								 ;also the indices of h_manual that coinc_cor1height width error
-    								 ;is to be added to    
-ENDFOR
-
-IF Keyword_set(A) THEN BEGIN 
-	cor1_indices = cor1_indices[1:n_elements(cor1_indices)-1]
-	save,cor1_indices,filename='cor1a_indices.sav'
-
-	coincident_mass = array1[1,cor1_indices]
-	pos = where(coincident_mass gt 0.0)
-	coinc_cor1height = array1[0,cor1_indices]
-	coinc_cor1height = coinc_cor1height[pos] ;Use these heights to calculate angular width
-										 ;uncertainty for COR1
-	save,coinc_cor1height,filename='coinc_cor1aheight.sav'
-
-ENDIF
-IF KEYWORD_SET(B) THEN BEGIN
-	cor1_indices = cor1_indices[1:n_elements(cor1_indices)-1]
-	save,cor1_indices,filename='cor1b_indices.sav'
-	
-	coincident_mass = array1[1,cor1_indices]
-	pos = where(coincident_mass gt 0.0)
-	coinc_cor1height = array1[0,cor1_indices]
-	coinc_cor1height = coinc_cor1height[pos] ;Use these heights to calculate angular width
-										 	 ;uncertainty for COR1
-	save,coinc_cor1height,filename='coinc_cor1bheight.sav'
-ENDIF
+pro masses_cor1_plus_cor2_test, master1, master2, calc_error=calc_error, plotcore_front=plotcore_front
 
 
-return,master_array
-END
+; This is the final version of the code! This produces the plot that went into 2012 Carley Masses 
+; paper. Eoin Carley 2013-Apr-10
 
-pro masses_cor1_plus_cor2_test,master1,master2,calc_error=calc_error,plotcore_front=plotcore_front
+; Increased the thickness of the plot
 
 cd,'/Users/eoincarley/Data/secchi_l1/20081212/COR1+COR2'
 
@@ -175,11 +121,15 @@ ENDIF ELSE BEGIN
 ENDELSE
 restore,'coinc_cor1aheight.sav'
 restore,'cor1a_indices.sav'
+
+
 ;====================END angular width uncertainty============================	
 ;=============================================================================
 
 ;==================Standard error on the mean of various values=================
 ;============================Height values======================================
+
+
 cd,'/Users/eoincarley/Data/secchi_l1/20081212/20081212_cor1/20081212_cor1a_B/mass_images'
 restore,'COR1a_height_5runs.sav',/verb
 cor1a_mean_height = fltarr(n_elements(height_array[0,*]))
@@ -254,16 +204,23 @@ save,A_error_pos,filename='final_A_error.sav'
 
 
 cd,'/Users/eoincarley/Data/secchi_l1/20081212/COR1+COR2'
+;------------------------------------------------------------------------------;
 
-;=================Define device and start plot==================================
+;					    Define device and start plot 						   ;
+
+;------------------------------------------------------------------------------;
 set_plot,'ps'
-device,filename = '20081212_mass_ht_test.ps',/color,bits=8,/inches,/encapsulate,$
+device,filename = '20081212_mass_ht_testv1.ps',/color,bits=8,/inches,/encapsulate,$
 xsize=6.5,ysize=10,xoffset=-2.3
 
 
 loadct,39
 !p.color=0
 !p.background=255
+!x.thick=5
+!y.thick=5
+!p.thick=3
+!p.charthick=3
 ;!x.margin=[15,0]
 a = anytim(file2time('20081212_040000'),/utim)
 b = anytim(file2time('20081212_160000'),/utim)
@@ -274,6 +231,8 @@ start_time = anytim(file2time('20081212_040000'),/yoh,/trun)
 utplot,master1(0,indexB0),master1(1,indexB1),/ylog,/xs,psym=1,xr=[a,b],$
 ytitle='!6CME Mass [g]',yr=[1e13,1e16],position = [0.11, 0.065, 0.92, 0.48],/normal,/noerase,tick_unit=14400,$
 xtitle='Start Time ('+start_time+' UT)'
+
+
 oploterror,master1(0,indexB0),master1(1,indexB1),B_error_pos,psym=1,/hibar
 oploterror,master1(0,indexB0),master1(1,indexB1),B_error_neg,psym=1,/lobar
 oplot,master2(0,indexA0),master2(1,indexA1),psym=4
@@ -372,5 +331,71 @@ fit_mass_curve_cor2b,/plotting
 
 device,/close
 set_plot,'x'
+END
+
+
+;------------------------------------------------------;
+
+;  					 Add masses						   ;
+
+;------------------------------------------------------;
+function add_masses,array1,array2,A=A,B=B
+
+start_of_add = closest(array1[2,*], array2[2,0])
+
+print,anytim(array1(2,start_of_add),/yoh)
+
+q = size(array1)
+q = q[2]
+end_of_add = closest(array2[2,*], array1[2,q-1])
+
+;add section here that replaces masses in array1 and array2 with the mean of the mass
+
+elements = start_of_add + q
+master_array = dblarr(3,elements)
+
+master_array[1,0:start_of_add-1]=array1[1,0:start_of_add-1]
+master_array[0,0:start_of_add-1]=array1[2,0:start_of_add-1]
+master_array[2,0:start_of_add-1]=array1[0,0:start_of_add-1]
+cor1_indices=[0]
+
+FOR i=0, end_of_add DO BEGIN
+
+    index = closest(array1[2,*], array2[2,i])
+    master_array[1,index] = array1[1,index]+array2[1,i]
+    master_array[0,index] = array2[2,i] ;the COR2 times
+    master_array[2,index] = array2[0,i] ;the COR2 heights
+    
+    cor1_indices=[cor1_indices,index];the indices of the COR1 data that are added to COR2 
+    								 ;also the indices of h_manual that coinc_cor1height width error
+    								 ;is to be added to    
+ENDFOR
+
+IF Keyword_set(A) THEN BEGIN 
+	cor1_indices = cor1_indices[1:n_elements(cor1_indices)-1]
+	save,cor1_indices,filename='cor1a_indices.sav'
+
+	coincident_mass = array1[1,cor1_indices]
+	pos = where(coincident_mass gt 0.0)
+	coinc_cor1height = array1[0,cor1_indices]
+	coinc_cor1height = coinc_cor1height[pos] ;Use these heights to calculate angular width
+										 ;uncertainty for COR1
+	save,coinc_cor1height,filename='coinc_cor1aheight.sav'
+
+ENDIF
+IF KEYWORD_SET(B) THEN BEGIN
+	cor1_indices = cor1_indices[1:n_elements(cor1_indices)-1]
+	save,cor1_indices,filename='cor1b_indices.sav'
+	
+	coincident_mass = array1[1,cor1_indices]
+	pos = where(coincident_mass gt 0.0)
+	coinc_cor1height = array1[0,cor1_indices]
+	coinc_cor1height = coinc_cor1height[pos] ;Use these heights to calculate angular width
+										 	 ;uncertainty for COR1
+	save,coinc_cor1height,filename='coinc_cor1bheight.sav'
+ENDIF
+
+
+return,master_array
 END
   
