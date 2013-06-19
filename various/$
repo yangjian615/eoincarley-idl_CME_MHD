@@ -1,0 +1,9 @@
+pro testing10
+
+cd,'/Users/eoincarley/Data/22sep2011_event/NRH'
+
+restore,'intensity_v_time_150MHz.sav'
+times = anytim(nrh_times, /utim)
+utplot, times, intensity , /xs, /ys, /ylog, ytitle='Total image brightness temperature (K)'
+
+END

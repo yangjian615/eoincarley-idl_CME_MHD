@@ -21,7 +21,7 @@ files = findfile('*n*.fts')
 		index = sort([hdr0.polar, hdr1.polar, hdr2.polar])
 		print,polar_seq
 		IF polar_seq[index[0]] eq [0.0] and polar_seq[index[1]] eq [120.0] and polar_seq[index[2]] eq [240.0] THEN BEGIN
-			secchi_prep,files[i:i+2], hdr, img, /rotate_on, /polariz_on, /pB, /write_fits
+			secchi_prep,files[i:i+2], hdr, img, /rotate_on, /polariz_on, /write_fits
     	ENDIF ELSE BEGIN
     		print,''
     		print,'Polarization image missing for '+ hdr.date_obs

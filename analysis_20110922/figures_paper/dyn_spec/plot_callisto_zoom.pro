@@ -68,8 +68,8 @@ xyouts, 0.551, 0.695, '100', align=0.5, /normal
 
 set_line_color
 rect_x = anytim(file2time('20110922_105120'),/utim)
-rectangle, rect_x, 20.0, 100.0, 70.0, thick=3, linestyle=0, color=0
-rectangle, rect_x, 20.0, 100.0, 70.0, thick=3, linestyle=2, color=1
+rectangle, rect_x, 20.0, 100.0, 70.0, thick=1, linestyle=0, color=0
+;rectangle, rect_x, 20.0, 100.0, 70.0, thick=3, linestyle=2, color=1
 
 
 loadct,5

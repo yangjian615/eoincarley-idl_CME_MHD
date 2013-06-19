@@ -1,0 +1,48 @@
+pro height_from_density_map
+
+; E. Carley 6th June 2013.
+; This replaced polar_density_fitting.pro
+
+
+loadct,1
+;---------------------------------------------;
+;				Read the data
+;---------------------------------------------;
+cd,'~/Data/22sep2011_event/density_mag'
+restore,'cartesian_density_map_22_sep.sav', /verb
+files_c2 = findfile('*.fts')
+c2data = lasco_readfits(files_c2[0], hdr)
+rsun_arcsec = get_solar_radius(hdr)
+
+;---------------------------------------------;
+;				Plot the data
+;---------------------------------------------;
+window,0
+plot_map, CAR_DEN_ALL, /log, fov=[-50,50, -50, 50]
+plot_helio, hdr.date_obs, /over, grid_spacing=15.0, gstyle=0
+
+
+;---------------------------------------------;
+;				Plot line profiles
+;---------------------------------------------;
+window,1
+plot_image, alog10(CAR_DEN_ALL.data)
+xcen = 300.0
+ycen = 300.0
+angle = 195*!DTOR 
+rhos = findgen(250)
+xline = (COS(angle) * rhos + xcen)*1.0 ;working in pixel units ;hdr.cdelt1
+yline = (SIN(angle) * rhos + ycen)*1.0 ;working in pixel units ;hdr.cdelt1
+plots, xline, yline, color=255, thick=1
+line_profile = interpolate(car_den_all.data, xline, yline)
+rhos_arcsec = rhos*CAR_DEN_ALL.dx
+rsun = rhos_arcsec/rsun_arcsec
+freq = 75e6
+n = freq2dens(freq)
+rad_n = interpol(rsun, line_profile, n)
+
+print,''
+print,'Radius of '+string(freq)+': '+string(rad_n)
+print,''
+stop
+END

@@ -1,4 +1,4 @@
-function electronBrightness
+function e_brightness
 
 ; Calculates electron brighness as a function of angle from POS, normalised to brightness
 ; on POS. It then plots the reult

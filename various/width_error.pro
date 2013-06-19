@@ -1,5 +1,9 @@
 pro width_error
 
+; This produces the mass angular width error for a number of heights
+; The results are plotted up using plot_width_error.pro. Eoin Carley Apr 2013
+
+
 angles = dindgen(160) 
 
 height = [1.2, 1.5, 2.0, 3.0, 5.0, 10.0, 80.0]
@@ -18,12 +22,5 @@ ENDFOR
 save, angle_err_height, filename='angle_err_height.sav'
 print, angle_err_height
 
-;window,0
-;plot, angle_err_height[0, *, 0, 0]/2.0, 1.0 - angle_err_height[1, *, 0, 0]/2.0, xtitle='CME half_angle',$
-;ytitle = 'Mass underestimation'
-
-;FOR i = 1, n_elements(height) - 1 DO BEGIN
-;	oplot,angle_err_height[0, *, i, 0]/2.0, 1.0 - angle_err_height[1, *, i, 0]/2.0, linestyle=i
-;ENDFOR	
 
 END

@@ -15,7 +15,7 @@ IF keyword_set(create_dynspec) THEN BEGIN
 	set_line_color
 
 	loadct,5
-	start_pos = 16000
+	start_pos = 0
 	inc = 405.0	
 	j=0.0
 	FOR i=start_pos*inc, (start_pos+2.0*nsteps)*inc-1.0, (2.0*inc) DO BEGIN
@@ -25,17 +25,25 @@ IF keyword_set(create_dynspec) THEN BEGIN
 		print,t
 		light_curve_right = reverse(result[i+4 : i+inc])
 		light_curve_left = reverse(result[i+inc+4.0 : i+2.0*inc])
-		;plot, light_curve_right, yr=[0,250], title=anytim(file2time(t), /yoh), charsize=2
-		;oplot, light_curve_left, color=5
+		plot, light_curve_right, yr=[0,250], title=anytim(file2time(t), /yoh), charsize=2
+		oplot, light_curve_left, color=5
+		stop
 	
 		;Only every second step
 		times[j] = anytim(file2time(t), /utim)
 		;print,anytim(times[j], /yoh)
 		dyn_spec_r[*,j] = light_curve_right
 		dyn_spec_l[*,j] = light_curve_left
-		wset,1
+		wset,0
 		;plot_image,congrid(transpose(dyn_spec_r), 800, 400), title=anytim(times[j], /yoh)
+
+		print, light_curve_left
+		print, light_curve_right
+		
 		j=j+1	
+		print,'------------'
+		print, i, j
+		print,'------------'
 
 	ENDFOR
 	
@@ -43,8 +51,8 @@ IF keyword_set(create_dynspec) THEN BEGIN
 times = times
 dyn_spec_r = transpose(dyn_spec_r)
 dyn_spec_l = transpose(dyn_spec_l)
-save,dyn_spec_r,times,freq,filename='20110922_dyn_spec_r.sav'
-save,dyn_spec_l,times,freq,filename='20110922_dyn_spec_l.sav'
+;save,dyn_spec_r,times,freq,filename='20110922_dyn_spec_r.sav'
+;save,dyn_spec_l,times,freq,filename='20110922_dyn_spec_l.sav'
 ENDIF
 !p.multi=[0,1,2]
 !p.charsize=2

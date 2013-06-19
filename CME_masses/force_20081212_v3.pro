@@ -148,6 +148,11 @@ restore,'B_mass_error_20081212.sav',/verb
 
 
 ;**********************************PLOTTING*******************************
+!p.thick=3
+!x.thick=5
+!y.thick=5
+!p.charthick=3
+
 
 set_plot,'ps'
 device,filename = '20081212_force_v2.eps',/color,/inches,/portrait,/encapsulate,$

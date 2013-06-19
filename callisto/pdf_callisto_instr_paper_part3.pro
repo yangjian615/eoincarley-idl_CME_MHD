@@ -1,6 +1,6 @@
 pro pdf_callisto_instr_paper_part3
 
-cd,'/Users/eoincarley/Data/CALLISTO/instrument_paper
+cd,'~/Data/CALLISTO/instrument_paper'
 radio_spectro_fits_read,'BIR_20110922_103000_01.fit',z,x,y
 running_mean_background,z,back
 zb=z-back
@@ -10,11 +10,13 @@ b = anytim(file2time('20110922_134500'),/utim)
 
 goes_data = latest_goes('20110922_100000','20110922_120000')
 
+stop
 
 set_plot,'ps'
 device,filename = 'callisto_instr_paper1_goes.ps',/color,bits=8,/inches,/encapsulate,$
 xsize=10,ysize=8,xoffset=10.0
 
+!p.charsize=1
 !p.multi=[0,1,2]
 
 xstart = anytim(file2time('20110922_100000'),/utim)
@@ -30,8 +32,7 @@ position=[0.07,0.6,0.95,0.97]
 oplot,goes_data[0,*],goes_data[1,*],color=245
 
 xyouts,0.02, 0.75, 'Watts m!U-2!N',/normal,orientation=90
-axis,yaxis=1,ytickname=[' ','A','B','C','M','X',' '];,charsize=1.5
-;axis,yaxis=0,yrange=[1e-9,1e-3];,charsize=1.5
+axis,yaxis=1,ytickname=[' ','A','B','C','M','X',' ']
 oplot,goes_data[0,*],goes_data[2,*],color=80,thick=1
 legend, ['GOES15 0.1-0.8 nm','GOES15 0.05-0.4 nm'],$
 linestyle=[0,0], color=[245,80], box=0,pos=[0.07,0.96],/normal
@@ -40,43 +41,40 @@ loadct,0
 i_gen = dindgen(1001)*((1.0e-3 - 1.0e-9)/1000)+1.0e-9
 tcon = anytim(file2time('20110922_103900'),/utim)
 plots,tcon,i_gen,linestyle=2
-;plots,tcon,i_gen,linestyle=2,color=255
-
 i_gen = dindgen(1001)*((1.0e-3 - 1.0e-9)/1000)+1.0e-9
 tcon = anytim(file2time('20110922_104500'),/utim)
 plots,tcon,i_gen,linestyle=2
-;plots,tcon,i_gen,linestyle=2,color=255
-
 plots,[0.07,0.355],[0.50,0.6],/normal,linestyle=2
 plots,[0.90,0.4],[0.50,0.6],/normal,linestyle=2
-
-loadct,0
 plots,goes_data[0,*],1e-8,thick=0.2,color=200
 plots,goes_data[0,*],1e-7,thick=0.2,color=200
 plots,goes_data[0,*],1e-6,thick=0.2,color=200
 plots,goes_data[0,*],1e-5,thick=0.2,color=200
 plots,goes_data[0,*],1e-4,thick=0.2,color=200
-;oplot,goes(0,*),goes(1,*),color=230,thick=1.7
 
 
 
-loadct,9
-!p.color=255
-!p.background=0
-stretch,255,60
-spectro_plot,bytscl(constbacksub(z,/auto),-30,80),x,y,/xs,/ys,ytitle='!6Frequency [MHz]',$
-yr=[100,10],yticks=9,yminor=2,$
+
+;--------------------------------------;
+;		Now plot spectrogram
+;--------------------------------------;
+loadct,5
+
+spectro_plot, constbacksub(z,/auto) >(-10), x, y, $
+ /xs, /ys,ytitle='!6Frequency [MHz]',$
+yr=[90,10], yticks=8, yminor=2,$
 xrange='2011-sep-22 '+['10:39:00','10:45:00'],charsize=1,$
 xtitle='!6Start Time (2011-Sep-22 10:39:00 UT)',position=[0.07,0.1,0.90,0.5]
 
-color_key, range = [ min(constbacksub(z,/auto)), max(constbacksub(z,/auto)) ],ysize=-0.5,barwidth = 0.2,$
-charsize=1.0,title='Intensity (DNs)'
+color_key, range = [ -10, max(constbacksub(z,/auto)) ], ysize=-0.5, barwidth = 0.2,$
+charsize=1.0, title='Intensity (DNs)'
 
-xyouts,0.09, 0.28, 'F',/normal,charsize=2,charthick=8
-xyouts,0.09, 0.28, 'F',/normal,charsize=2,charthick=2,color=0
+set_line_color
+xyouts,0.09, 0.28, 'F',/normal,charsize=2,charthick=10, color = 0
+xyouts,0.09, 0.28, 'F',/normal,charsize=2,charthick=3,color=1
 
-xyouts,0.13, 0.18, 'H',/normal,charsize=2,charthick=8
-xyouts,0.13, 0.18, 'H',/normal,charsize=2,charthick=2,color=0
+xyouts,0.13, 0.18, 'H',/normal,charsize=2,charthick=10, color = 0
+xyouts,0.13, 0.18, 'H',/normal,charsize=2,charthick=3,color=1
 
 
 ;loadct,5

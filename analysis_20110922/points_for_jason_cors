@@ -1,0 +1,54 @@
+pro points_for_jason_cors
+
+; Point and click on the CME front and shock for the 22-Sep-2011 event, to be passed onto Jason.
+; Written 10-June-2013
+
+; Same as other code but wrks for CORs this time
+
+; set up a window
+device, retain = 2
+loadct,3
+window, 0 , xs=700, ys=700
+
+cd,'~/Data/22sep2011_event/secchi/COR2/b/l1'
+
+files = findfile('*.fts')
+pre = sccreadfits(files[0], he_pre)
+mask = get_smask(he_pre)
+pre = pre*mask
+
+
+remove_nans, pre, junk, junk, nan_pos
+pre[nan_pos[*]] = 0.0
+
+
+
+;FOR i=15, n_elements(files)-1 DO BEGIN
+i=2
+	loadct,3
+	img = sccreadfits(files[i], he)
+	img = temporary(img)*mask
+	
+	remove_nans, img, junk, junk, nan_pos
+	img[nan_pos[*]] = 0.0	
+	
+	img = temporary(img) - pre
+	img = img/stdev(img)
+	
+ 	;THIS PLOT SHOWS CORONAL RECOIL ON THE OPPOSITE SIDE OF SUN QUITE WELL
+	plot_image, smooth(img,5) > (0) < 1, $
+	title=he.date_obs, charsize=2
+	;suncen = get_suncen(he)
+	;tvcircle, (he.rsun/he.cdelt1), suncen.xcen, suncen.ycen, 254, /data, color=255,thick=2
+	stop
+	point, front_x, front_y, newlabel = ' ', /nocross
+	time = [he.date_obs]
+	set_line_color
+	plots, front_x, front_y, /data, psym=1, color=5
+	save, front_x, front_y, time, filename='cor2_front_'+time2file(he.date_obs)+'.sav'
+	x2png,'cor2front_'+he.date_obs+'.png'
+	stop
+;ENDFOR
+
+
+END

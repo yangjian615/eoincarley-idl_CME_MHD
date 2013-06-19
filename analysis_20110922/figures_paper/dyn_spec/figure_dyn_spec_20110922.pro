@@ -37,8 +37,8 @@ plot_nda, t1, t2, xright, xleft
 
 set_line_color
 rect_x = anytim(file2time('20110922_103900'),/utim)
-rectangle, rect_x, 8.0, 60.0*19.0, 180.0, thick=3, linestyle=0, color=0
-rectangle, rect_x, 8.0, 60.0*19.0, 180.0, thick=3, linestyle=2, color=1
+rectangle, rect_x, 8.0, 60.0*19.0, 180.0, thick=1, linestyle=0, color=0
+;rectangle, rect_x, 8.0, 60.0*19.0, 180.0, thick=3, linestyle=2, color=1
 
 
 ;---------- CALLISTO ------------ 
@@ -84,16 +84,16 @@ xyouts,xleft+0.01,0.29, 'RSTO Callisto', /normal, color=1
 xyouts,xright-0.01, 0.72, 'Nancay DA', /normal, color=0, align=1, charthick=4
 xyouts,xright-0.01, 0.72, 'Nancay DA', /normal, color=1, align=1
 
-plots,[0.2675, xleft], [0.45, 0.88], /normal,thick=3,linestyle=0,color=0;======[x1,x2],[y1,y2]=====
-plots,[0.2675, xleft], [0.45, 0.88], /normal,thick=3,linestyle=2,color=1
-plots,[0.2675, xleft], [0.281, 0.531], /normal,thick=3,linestyle=0,color=0;======[x1,x2],[y1,y2]=====
-plots,[0.2675, xleft], [0.281, 0.531], /normal,thick=3,linestyle=2,color=1
+plots,[0.2675, xleft], [0.45, 0.88], /normal,thick=1,linestyle=0,color=0;======[x1,x2],[y1,y2]=====
+;plots,[0.2675, xleft], [0.45, 0.88], /normal,thick=3,linestyle=2,color=1
+plots,[0.2675, xleft], [0.281, 0.531], /normal,thick=1,linestyle=0,color=0;======[x1,x2],[y1,y2]=====
+;plots,[0.2675, xleft], [0.281, 0.531], /normal,thick=3,linestyle=2,color=1
 
 hb_box_y = 0.724
-plots,[xright, 0.865], [0.481, hb_box_y], /normal,thick=3,linestyle=0,color=0;======[x1,x2],[y1,y2]=====
-plots,[xright, 0.865], [0.481, hb_box_y], /normal,thick=3,linestyle=2,color=1
-plots,[xleft, 0.83], [0.48, hb_box_y], /normal,thick=3,linestyle=0,color=0;======[x1,x2],[y1,y2]=====
-plots,[xleft, 0.83], [0.48, hb_box_y], /normal,thick=3,linestyle=2,color=1
+plots,[xright, 0.865], [0.481, hb_box_y], /normal,thick=1,linestyle=0,color=0;======[x1,x2],[y1,y2]=====
+;plots,[xright, 0.865], [0.481, hb_box_y], /normal,thick=3,linestyle=2,color=1
+plots,[xleft, 0.83], [0.48, hb_box_y], /normal,thick=1,linestyle=0,color=0;======[x1,x2],[y1,y2]=====
+;plots,[xleft, 0.83], [0.48, hb_box_y], /normal,thick=3,linestyle=2,color=1
 
 xyouts, 0.6383, 0.699, 'Type II', /normal, color=0, charthick=4
 xyouts, 0.6383, 0.699, 'Type II', /normal, color=1

@@ -83,8 +83,8 @@ position=[xleft, 0.28, xright, 0.32], /noerase, charsize=1.0
 
 set_line_color
 rect_x = anytim(file2time('20110922_103900'),/utim)
-rectangle, rect_x, 10.0, 60.0*19.0, 190.0, thick=3, linestyle=0, color=0
-rectangle, rect_x, 10.0, 60.0*19.0, 190.0, thick=3, linestyle=2, color=1
+rectangle, rect_x, 10.0, 60.0*19.0, 190.0, thick=1, linestyle=0, color=0
+;rectangle, rect_x, 10.0, 60.0*19.0, 190.0, thick=3, linestyle=2, color=1
 
 
 loadct,5

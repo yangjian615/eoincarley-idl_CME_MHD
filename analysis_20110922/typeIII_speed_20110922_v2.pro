@@ -60,7 +60,7 @@ print,'-------------------------'
 ;-----------------------------------------------------------;
 ;		Now cconvert to distance along parker spiral        ;
 ;-----------------------------------------------------------;
-v_sw = 450.0 ;km/s see http://fiji.sr.unh.edu/ for the bulk velocity on 22-Sep2-2011
+v_sw = 450.0 ;km/s see http://fiji.sr.unh.edu/ for the bulk velocity on 22-Sep-2011
 arc_len = parker_spiral_length(rad_ne, v_sw)
 window,5,xs=500,ys=500
 utplot, time, arc_len, xtitle='Time (UT)', ytitle='Distance along Parker spiral (Rsun)'
@@ -78,12 +78,24 @@ velocity = result[1]*rsun
 print,'-------------------------'
 print,'Velocity of beam: '+string(velocity/1000.0)+' km/s'
 print,'Velocity of beam: '+string(velocity/c)+' c'
-me = 9.1e-31
-mp = 1.27e-27
-kine_J = 0.5*me*(velocity^2.0) ;J
-kine_ev = kine_J/1.6e-19
-print,'Energy of beam: '+string(kine_ev/1.0e3)+' keV'
+
+
+
+rel_e = relativistic_energy(velocity/c)
+
+print,'Energy of beam: '+string(rel_e[0]/1.0e3)+' keV'
 print,'-
 
 
+;-------------------------------------------;
+;				ETA at 1AU
+;-------------------------------------------;
+burst_start = anytim(file2time('20110922_104000'), /utim)
+arc_len = parker_spiral_length(215, v_sw)  
+tim_flight = (arc_len*6.955e8)/velocity
+eta = burst_start +tim_flight
+print, 'Time of flight: '+string(tim_flight/60)+' minutes'
+print, 'Expected arrival time: '+string(anytim(eta, /yoh))+' UT'
+
+save, time, freq_p, filename='freq_time_points.sav'
 END

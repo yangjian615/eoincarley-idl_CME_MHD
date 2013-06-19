@@ -1,4 +1,9 @@
 pro polar_density_fitting
+
+;N.B! this was originally used to get the heights of particular densities. Now, I'm using the 2D
+; density maps that Pietro created. See height_from_density_map.pro
+
+
 ;Procedure to fit SDO density map (1-1.3 Rsun) and LASCO density maps (2.5 - 6 Rsun) with Plane parallel and Spherical Model
 
 ;Restore the SDO emission measure polar map

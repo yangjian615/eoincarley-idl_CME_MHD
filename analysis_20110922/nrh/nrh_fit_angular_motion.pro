@@ -36,7 +36,7 @@ angle_nrh = angle_nrh[index1:index2]
 
 start = [17.0, 0.04, 0.0]
 fit =  'p[0] + p[1]*x + 0.5*p[2]*(x^2.0)'
-errors = dblarr(n_elements(t)) + 3.0 ;expected PA angular shift due to ionoshperic scattering
+errors = dblarr(n_elements(t)) + 2.6 ;expected PA angular shift due to ionoshperic scattering
 									 ;(see red notebook 1)
 
 
@@ -123,6 +123,9 @@ x2png,'fit2.png'
 
 
 ;-------------------- LINEAR --------------------------
+
+;This is the for used in the final draft of the paper!!!
+
 index1 = closest(anytim(nrh_times, /utim), time[0] + times_aia_sec[0])
 index2 = closest(anytim(nrh_times, /utim), plot_t2)
 t = anytim(nrh_times[index1:index2],/utim) - anytim(nrh_times[index1],/utim) ;seconds
@@ -147,7 +150,7 @@ asim = fit_params[0] + fit_params[1]*tsim
 	print,'-----------------------------------------'
 	print,'Linear Fit'
 	print,'Radio Source Speed: '+ string(fit_params[1]*!DTOR*(1.28*6.955e5))+$
-	' +/-'+string(perror[1]*sqrt(bestnorm)*!DTOR*(1.28*6.955e5)) +'km/s' ; bestnorm usually divided by dof
+	' +/-'+string(perror[1]*sqrt(bestnorm/dof)*!DTOR*(1.28*6.955e5)) +'km/s' ; bestnorm usually divided by dof
 	;Add on
 	
 	print,'-----------------------------------------'
@@ -226,7 +229,7 @@ tsim_nrh = tsim
 asim_nrh = asim
 
 
-
+stop
 ;-----------------------------------------------------------
 ; 					  AIA Fitting 					  
 ;-----------------------------------------------------------

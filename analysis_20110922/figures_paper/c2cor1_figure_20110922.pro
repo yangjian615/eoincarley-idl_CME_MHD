@@ -29,7 +29,7 @@ index2map, c2hdr, temporary(mass_image), c2_mass_map
 
 ;---------------- AIA 211 --------------------;
 
-cd,'/Users/eoincarley/Data/22sep2011_event/AIA'
+cd,'~/Data/22sep2011_event/AIA'
 read_sdo, 'aia.lev1.211A_2011-09-22T10_57_51.83Z.image_lev1.fits', he_aia_pre, data_aia_pre
 read_sdo, 'aia.lev1.211A_2011-09-22T10_58_48.62Z.image_lev1.fits', he_aia, data_aia
 
@@ -54,7 +54,7 @@ xyouts, pos[2]-0.01, pos[3] - 0.02, 'a', /normal, alignment=1.0, charthick=3, co
 
 
 ;-------------- STEREO COR1 -----------------;
-cd,'/Users/eoincarley/Data/22sep2011_event/secchi/COR1/b/24540411/l1_new'
+cd,'~/Data/22sep2011_event/secchi/COR1/b/24540411/l1_new'
 files = findfile('*.fts')
 pre = sccreadfits(files[5],he_pre)
 data = sccreadfits(files[13],he)
@@ -78,7 +78,7 @@ cor1b_map.data = (cor1b_map.data - mean(cor1b_map.data))/stdev(cor1b_map.data)
 
 
 ;------------ STEREO EUVI ------------------;
-cd,'/Users/eoincarley/Data/22sep2011_event/secchi/EUVI/b/34687667/l1'
+cd,'~/Data/22sep2011_event/secchi/EUVI/b/34687667/l1'
 files = findfile('*.fts')
 pre = sccreadfits(files[0], he_euvi_pre)
 data = sccreadfits(files[13], he_euvi)
@@ -171,7 +171,7 @@ END
 ;---------------------------------------------------------;
 
 pro plot_wl_shock, he, save_file
-	cd,'/Users/eoincarley/Data/22sep2011_event/secchi/COR1/b/24540411/l1_new'
+	cd,'~/Data/22sep2011_event/secchi/COR1/b/24540411/l1_new'
 	restore, save_file, /verb
 
 	suncen = scc_SUN_CENTER(he)
@@ -219,7 +219,7 @@ END
 pro plot_cor1_zooms, i, pos, tag=tag, ytitle=ytitle, ytickn=ytickn, time=time
 
 	;-------------- STEREO COR1 -----------------;
-	cd,'/Users/eoincarley/Data/22sep2011_event/secchi/COR1/b/24540411/l1_new'
+	cd,'~/Data/22sep2011_event/secchi/COR1/b/24540411/l1_new'
 	files = findfile('*.fts')
 	pre = sccreadfits(files[5],he_pre)
 	data = sccreadfits(files[i],he)
@@ -238,7 +238,7 @@ pro plot_cor1_zooms, i, pos, tag=tag, ytitle=ytitle, ytickn=ytickn, time=time
 	cor1b_map.data = (cor1b_map.data - mean(cor1b_map.data))/stdev(cor1b_map.data)
 
 	;------------ STEREO EUVI ------------------;
-	cd,'/Users/eoincarley/Data/22sep2011_event/secchi/EUVI/b/34687667/l1'
+	cd,'~/Data/22sep2011_event/secchi/EUVI/b/34687667/l1'
 	files = findfile('*.fts')
 	pre = sccreadfits(files[0], he_euvi_pre)
 	data = sccreadfits(files[i], he_euvi)

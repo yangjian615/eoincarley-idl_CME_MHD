@@ -6,7 +6,7 @@ files = findfile('*.fts')
 pre = lasco_readfits(files[0], he_pre)
 mask = lasco_get_mask(he_pre)
 pre = pre*mask
-pre_filt = disk_nrgf(pre, he_pre, 0, 0) >(-5.0) <5.0
+pre_filt = disk_nrgf(pre, he_pre, 0, 0) > (-5.0) < 5.0
 
 
 !p.multi=[0,1,1]
@@ -31,7 +31,7 @@ FOR i=3, n_elements(files)-1 DO BEGIN
 	title='Base Difference Only'
 	xyouts, 0.19, 0.16, he.date_obs, /normal, charsize=2.0
 	suncen = get_suncen(he)
-	tvcircle, (he.rsun/he.cdelt1), suncen.xcen, suncen.ycen, 254, /data,color=255,thick=2
+	tvcircle, (he.rsun/he.cdelt1), suncen.xcen, suncen.ycen, 254, /data, color=255, thick=2
 	;x2png,'bd_'+he.date_obs+'.png'
 	stop
 	

@@ -4,10 +4,11 @@ cd,'/Users/eoincarley/Data/CALLISTO/20110922'
 t1 = anytim(file2time('20110922_104000'),/utim)
 t2 = anytim(file2time('20110922_105900'),/utim)
 files = findfile('*.fit')
-radio_spectro_fits_read,files[0], low1data, l1time, lfreq
-radio_spectro_fits_read,files[2], low2data, l2time, lfreq
-radio_spectro_fits_read,files[1], mid1data, m1time, mfreq
-radio_spectro_fits_read,files[3], mid2data, m2time, mfreq
+stop
+radio_spectro_fits_read,files[1], low1data, l1time, lfreq
+radio_spectro_fits_read,files[4], low2data, l2time, lfreq
+radio_spectro_fits_read,files[2], mid1data, m1time, mfreq
+radio_spectro_fits_read,files[5], mid2data, m2time, mfreq
 
 low_data = [low1data, low2data]
 low_times = [l1time, l2time]
