@@ -17,6 +17,9 @@ stationaryx_peak_max = fltarr(n_elements(nrh_times))
 
 source_position = dblarr(2,n_elements(nrh_times))
 source_peak_Tb = dblarr(2,n_elements(nrh_times))
+source_fwhm = dblarr(n_elements(nrh_times))
+
+
 FOR i=0, 	n_elements(nrh_times)-1 DO BEGIN
 	index_nrh=i
 	nrh_data_image = nrh_data[*,*,index_nrh]
@@ -83,6 +86,7 @@ FOR i=0, 	n_elements(nrh_times)-1 DO BEGIN
 	;Since gauss2dfit doens't give errors, use a as start values
 	;for mpfit2dfun (which provides ucnertainties).
 	start_parms = a
+	
 	xjunk = dindgen( n_elements(junk_array[*,0]) )
 	yjunk = dindgen( n_elements(junk_array[0,*]) )
 	result_pars = MPFIT2DFUN('my2Dgauss', xjunk, yjunk, junk_array, ERR, $
@@ -91,7 +95,7 @@ FOR i=0, 	n_elements(nrh_times)-1 DO BEGIN
 		shade_surf,yfit,charsize=3.0
 	result = yfit	
 	
-	stop
+	
 	print,max(result)
 	print,max(junk_array)
 	IF finite(max(result)) eq 1 THEN BEGIN
@@ -112,12 +116,22 @@ FOR i=0, 	n_elements(nrh_times)-1 DO BEGIN
 		peak_TB = peak
 	ENDIF
 	loc_whole = [loc_section[0] + x1, loc_section[1] + y1]
+	
+	
+	window,2,xs=800,ys=800
+    loadct,3
+    plot_image,nrh_data_image,title=nrh_times[index_nrh],charsize=2
+	tvcircle, (nrh_struc_hdr[index_nrh].SOLAR_R), $
+	64.0, 64.0, 254, /data,color=255,thick=1
+	
+	
 	set_line_color
 	plots,loc_whole[0],loc_whole[1],psym=1,color=5,symsize=3
 	
 	source_position[0,i] = loc_whole[0]
 	source_position[1,i] = loc_whole[1]
 	source_peak_Tb[i] = peak_TB
+	source_fwhm[i] = mean([a[2], a[3]]) ;Units of pixels
 	;window,4
 	;;plot_image,data_section,charsize=3.0
 	;plots,loc_section[0],loc_section[1],psym=1,color=255,symsize=3
@@ -133,13 +147,14 @@ FOR i=0, 	n_elements(nrh_times)-1 DO BEGIN
 	rads = dindgen(101)*(r1)/100.0
 	xs = COS((t1+90.0)*!DTOR) * rads + 64.0
     ys = SIN((t1+90.0)*!DTOR) * rads + 64.0
+  
     plots,xs,ys,color=5
 	print,'Angle: '+string(t1)
-	wait,0.5
+	wait,1.0
 	
 ENDFOR
 
-save, source_position, nrh_times, source_peak_Tb, filename = 's_position_20110922.sav'
+save, source_position, nrh_times, source_peak_Tb, source_fwhm, filename = 's_position_20110922_fwhm.sav'
 stop
 END
 

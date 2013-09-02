@@ -14,15 +14,16 @@ height = [1.2, 1.5, 2.0, 3.0, 5.0, 10.0, 80.0]
 
 IF keyword_set(toggle) THEN BEGIN
 	set_plot,'ps'
+	!p.font=0
 	device, filename='width_error.ps', /color,/inches,/portrait,/encapsulate,$
-	xsize=10,ysize=8;
+	xsize=10,ysize=8, /helvetica
 ENDIF ELSE BEGIN
 	window, 0, xs=600, ys=600
 ENDELSE
 
 result = greek('phi')
 sun = SUNSYMBOL()
-
+loadct,0
 plot, angle_err_height[0, *, 0, 0], 1.0 - angle_err_height[1, *, 0, 0]/100.0, xtitle='CME Width ('+result+')',$
 ytitle = '(Derived Mass)/(Actual Mass)', xr=[0, 170], yr=[0.5, 1]
 
@@ -39,9 +40,10 @@ xyouts, 0.80, 0.38, '5.0', /normal
 xyouts, 0.80, 0.41, '10.0', /normal
 xyouts, 0.80, 0.44, '80.0', /normal
 set_line_color
-xyouts, 0.80, 0.48, 'CME Height (R!L'+sun+'!N)', /normal, charsize=1.5, color=1, charthick=20
-xyouts, 0.80, 0.48, 'CME Height (R!L'+sun+'!N)', /normal, charsize=1.5
-
+xyouts, 0.80, 0.48, 'CME Height (R!L   !N)', /normal, charsize=1.5, color=1, charthick=20 
+xyouts, 0.805, 0.48, '           !L!9n!X!N ', /normal, charsize=2.0, color=1, charthick=20, font=-1
+xyouts, 0.80, 0.48, 'CME Height (R!L   !N)', /normal, charsize=1.5
+xyouts, 0.805, 0.48, '           !L!9n!X!N  ', /normal, charsize=2.0, font=-1
 
 IF keyword_set(toggle) THEN BEGIN
 	device,/close

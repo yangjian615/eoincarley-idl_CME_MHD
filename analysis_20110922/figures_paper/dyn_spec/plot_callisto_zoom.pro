@@ -38,7 +38,7 @@ restore,'new_mid_data_bg.sav'
 t1_bs = anytim(file2time('20110922_103900'),/utim)
 t2_bs = anytim(file2time('20110922_10580'),/utim)
 
-spectro_plot, smooth(low_data_bg,3) > (-30.0) < 100.0, low_times, lfreq, /xs, ystyle=4, $
+spectro_plot, smooth(low_data_bg,3) > (-30.0) < 50.0, low_times, lfreq, /xs, ystyle=4, $
 xr=[t1_bs,t2_bs], yr=[100,20], yticks=7, yminor=2, $
 xticklen=-0.01, yticklen=-0.01, ytitle=' ', $
 position=[xleft, 0.7, xright, 0.88], /noerase, xtitle=' '
@@ -61,7 +61,7 @@ stretch, 0, 210, 1.3
 ;readme = 'Created with plot_nda'
 ;save,z_new,readme,filename='RFI_rmv_nda.sav'
 restore,'RFI_rmv_nda.sav'
-spectro_plot, z_new >(-30.0) , times, reverse(freq), /xs, /ys, xr=[t1_bs,t2_bs], $
+spectro_plot, z_new >(-30.0), times, reverse(freq), /xs, /ys, xr=[t1_bs,t2_bs], $
 position = [xleft, 0.7, xright, 0.88], /normal, /noerase, yr=[13, 100], yminor=2, $
 xtickname=[' ', ' ', ' ', ' ', ' ', ' ', ' '], ytickname=['  ', '80', '60', '40', '20']
 xyouts, 0.551, 0.695, '100', align=0.5, /normal

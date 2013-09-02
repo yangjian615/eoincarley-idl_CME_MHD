@@ -138,7 +138,7 @@ YTITLE = 'CME Mass (g)',TITLE = 'COR2 B CME Mass vs. Height; 12/12/2008 CME Even
 oploterror,mass_array(0,*),mass_array(1,*),xerr,yerr,psym=4
 
 
-save, mass_array,filename='mass_height.sab'
+;save, mass_array,filename='mass_height.sab'
 
 
 return,mass_array

@@ -1,7 +1,12 @@
 pro figure_dyn_spec_20110922, toggle=toggle
 
-; This is an update on Figure1_20110922_paper_v. Had to include Nancay data and Waves data.
+;--------------------------------------------------------;
+;		This code plots the dynamic spectra figure for the Nat Phys paper (final draft)
+;       8-Aug-2013
+;
+
 ; Written on Jan 14th 2013
+;
 
 t1 = anytim(file2time('20110922_100000'),/utim)
 t2 = anytim(file2time('20110922_120000'),/utim)
@@ -46,8 +51,8 @@ RESOLVE_ROUTINE, 'plot_callisto'
 plot_callisto, t1, t2, xright, xleft
 
 set_line_color
-xyouts,xright-0.01, 0.88, 'S/WAVES', /normal, color=0, align=1.0, charthick=4
-xyouts,xright-0.01, 0.88, 'S/WAVES', /normal, color=1, align=1.0
+xyouts,xright-0.01, 0.88, 'SWAVES', /normal, color=0, align=1.0, charthick=4
+xyouts,xright-0.01, 0.88, 'SWAVES', /normal, color=1, align=1.0
 
 xyouts,xright-0.01, 0.43, 'Nancay DA', /normal, color=0, align=1.0, charthick=4
 xyouts,xright-0.01, 0.43, 'Nancay DA', /normal, color=1, align=1.0
@@ -56,8 +61,8 @@ xyouts,xright-0.01, 0.30, 'RSTO Callisto', /normal, color=0, align=1.0, charthic
 xyouts,xright-0.01, 0.30, 'RSTO Callisto', /normal, color=1, align=1.0
 
 
-xyouts,0.09, 0.515, 'SA Type III', /normal, color=0, charthick=4
-xyouts,0.09, 0.515, 'SA Type III', /normal, color=1, charthick=1
+xyouts,0.11, 0.515, 'Type III', /normal, color=0, charthick=4
+xyouts,0.11, 0.515, 'Type III', /normal, color=1, charthick=1
 
 arrow, 0.16, 0.52, 0.19, 0.52, color=1, /normal, thick=4, hthick=0.2, hsize=1.1,/solid
 
@@ -84,6 +89,11 @@ xyouts,xleft+0.01,0.29, 'RSTO Callisto', /normal, color=1
 xyouts,xright-0.01, 0.72, 'Nancay DA', /normal, color=0, align=1, charthick=4
 xyouts,xright-0.01, 0.72, 'Nancay DA', /normal, color=1, align=1
 
+xyouts, 0.77, 0.32, 'Herringbones', /normal, color=1, align=0.5
+plots,[0.688, 0.727], [0.346, 0.323], /normal,thick=1,linestyle=0,color=1
+plots,[0.88, 0.815], [0.346, 0.323], /normal,thick=1,linestyle=0,color=1
+
+
 plots,[0.2675, xleft], [0.45, 0.88], /normal,thick=1,linestyle=0,color=0;======[x1,x2],[y1,y2]=====
 ;plots,[0.2675, xleft], [0.45, 0.88], /normal,thick=3,linestyle=2,color=1
 plots,[0.2675, xleft], [0.281, 0.531], /normal,thick=1,linestyle=0,color=0;======[x1,x2],[y1,y2]=====
@@ -99,15 +109,17 @@ xyouts, 0.6383, 0.699, 'Type II', /normal, color=0, charthick=4
 xyouts, 0.6383, 0.699, 'Type II', /normal, color=1
 arrow, 0.62, 0.75, 0.65, 0.71, color=1, /normal, thick=4, hthick=0.2, hsize=1.1, /solid
 
-xyouts, 0.61, 0.901, 'SA Type III', /normal, color=0, charthick=10
+xyouts, 0.60, 0.901, 'Type III', /normal, color=0, charthick=10
 ;xyouts, 0.61, 0.901, 'SA Type III', /normal, color=1, charthick=0.1
 
 arrow, 0.63, 0.899, 0.6, 0.868, color=0, /normal, thick=4, hthick=0.2, hsize=1.1, /solid
 arrow, 0.63, 0.899, 0.6, 0.868, color=1, /normal, thick=1, hthick=0.2, hsize=1.1, /solid
 
+DEVICE, SET_FONT = 'helvetica-bold'
 xyouts, 0.055,  0.881, 'a', /normal, color=1
-xyouts, 0.572,  0.861, 'b', /normal, color=1
+xyouts, 0.575,  0.861, 'b', /normal, color=1
 xyouts, 0.575,  0.459, 'c', /normal, color=1
+DEVICE, SET_FONT = 'helvetica'
 xyouts, 0.014,  0.539, 'Frequency (MHz)', /normal, color=0, alignment=0.5, orientation=90.0
 xyouts, 0.530,  0.695, 'Frequency (MHz)', /normal, color=0, alignment=0.5, orientation=90.0
 

@@ -1,4 +1,8 @@
-pro wavelet_analysis
+pro wavelet_analysis_20110922
+
+;-------------------------------------------------------------------------;
+;		Produces Supplementary Figure 1 for final draft of the paper      ;
+;
 
 cd,'~/Data/CALLISTO/20110922'
 loadct,5

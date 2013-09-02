@@ -3,7 +3,7 @@ pro plot_callisto, t1, t2, xright, xleft
 ;This is a module of figure_dyn_spec_20110922.pro
 
 
-cd,'/Users/eoincarley/Data/CALLISTO/20110922'
+cd,'~/Data/CALLISTO/20110922'
 
 files = findfile('*01.fit')
 radio_spectro_fits_read,files[0], low1data, l1time, lfreq

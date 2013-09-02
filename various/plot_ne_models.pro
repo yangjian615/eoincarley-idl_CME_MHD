@@ -109,4 +109,33 @@ charsize=1.4,color=[50,200,0,240,140],/right,thick=2
 device,/close
 set_plot,'x'
 
+
+
+
+rsun = 6.955e5 ;km
+
+expon = (dindgen(101)*(5.0 - 3.0)/100.0 ) + 3.0
+Df = -10.0^(reverse(expon))
+
+
+v_saito = Df*(1.0/deriv(rhos*rsun, 1.0*saito_bg/fac))*sqrt(1.0*saito_bg/fac)*2.0/8980.
+v_saito_phole = Df*(1.0/deriv(rhos*rsun, 1.0*saito_phole/fac))*sqrt(1.0*saito_phole/fac)*2.0/8980.
+v_saito_ehole = Df*(1.0/deriv(rhos*rsun, 1.0*saito_ehole/fac))*sqrt(1.0*saito_ehole/fac)*2.0/8980.
+v_newkirk = Df*(1.0/deriv(rhos*rsun, 1.0*newkirk/fac))*sqrt(1.0*newkirk/fac)*2.0/8980.
+v_ba = Df*(1.0/deriv(rhos*rsun, 1.0*ba/fac))*sqrt(1.0*ba/fac)*2.0/8980.
+
+
+plot, rhos, v_saito, /ylog
+oplot, rhos, v_saito_phole, color=140, linestyle=4, thick=3
+oplot, rhos, v_saito_ehole, color=240, linestyle=3, thick=3
+oplot, rhos, v_newkirk, color=50, linestyle=6, thick=3
+oplot, rhos, v_ba, color=200, linestyle=2, thick=3
+
+
+legend,['Newkirk','Baum-Allen','Saito','Saito Eq Hole','Saito Pol Hole'],linestyle=[6,2,5,3,4],$
+charsize=1.4,color=[50,200,0,240,140],/right,thick=2
+
+stop
+
+
 END

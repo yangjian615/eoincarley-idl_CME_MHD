@@ -121,10 +121,12 @@ linestyle=[0, 0], psym=[1, 0],$
 charsize=2 ,box=0, color=[0, 0], /bottom, /right
 x2png,'fit2.png'
 
+;-----------------------------------------------------------------------------------------;
+;					                 LINEAR 
+;-----------------------------------------------------------------------------------------;
+;                     THIS IS THE FIT USED IN THE NAT PHYS PAPER
+;-----------------------------------------------------------------------------------------;
 
-;-------------------- LINEAR --------------------------
-
-;This is the for used in the final draft of the paper!!!
 
 index1 = closest(anytim(nrh_times, /utim), time[0] + times_aia_sec[0])
 index2 = closest(anytim(nrh_times, /utim), plot_t2)
@@ -132,8 +134,8 @@ t = anytim(nrh_times[index1:index2],/utim) - anytim(nrh_times[index1],/utim) ;se
 angle_nrh = angle_position - 170.0
 angle_nrh = angle_nrh[index1:index2]
 
-angle_nrh = angle_nrh ;- median(angle_nrh)
-t = t ;- median(t)
+angle_nrh = angle_nrh 
+t = t 
 
 start = [0.0, 0.04]
 fit =  'p[0] + p[1]*x'
@@ -150,8 +152,8 @@ asim = fit_params[0] + fit_params[1]*tsim
 	print,'-----------------------------------------'
 	print,'Linear Fit'
 	print,'Radio Source Speed: '+ string(fit_params[1]*!DTOR*(1.28*6.955e5))+$
-	' +/-'+string(perror[1]*sqrt(bestnorm/dof)*!DTOR*(1.28*6.955e5)) +'km/s' ; bestnorm usually divided by dof
-	;Add on
+	' +/-'+string(perror[1]*sqrt(bestnorm/dof)*!DTOR*(1.28*6.955e5)) +'km/s' 
+	; bestnorm usually divided by dof
 	
 	print,'-----------------------------------------'
 	print,' '
@@ -245,7 +247,7 @@ remove_nans, angle_err_aia, angle_err_aia
 
 start = [20.0, 0.02];, 0.0]
 fit =  'p[0] + p[1]*x'; + 0.5*p[2]*(x^2.0)'
-;errors = angle_err_aia 
+errors = angle_err_aia 
 fit_params = mpfitexpr(fit, t, angle, errors, start, perror=perror, $
 						bestnorm=bestnorm, dof=dof)
 
@@ -259,7 +261,7 @@ set_line_color
 	print,'-----------------------------'
 	print,'Linear Fit'
 	print,'EUV Speed: '+ string(fit_params[1]*!DTOR*(1.0*6.955e5))+$
-	'+/-'+string(perror[1]*sqrt(bestnorm)*!DTOR*(1.0*6.955e5)) +'km/s' ;bestnorm usually bestnorm/doff
+	'+/-'+string(perror[1]*(sqrt(bestnorm))*!DTOR*(1.0*6.955e5)) +'km/s' ;bestnorm usually bestnorm/doff
 	;print,'EUV Acceleration: '+ string(fit_params[2]*!DTOR*(1.0*6.955e8))+$
 	;' +/-'+string(perror[2]*sqrt(bestnorm/dof)*!DTOR*(1.0*6.955e8)) +'km/s/s'
 	print,'-----------------------------'
@@ -280,7 +282,7 @@ charsize=2 ,box=0, color=[0, 0], /bottom, /right
 
 tsim_aia = tsim
 asim_aia = asim
-save, tsim_aia, asim_aia, filename = 'aia_source_motion_fit_20110922.sav'
+;save, tsim_aia, asim_aia, filename = 'aia_source_motion_fit_20110922.sav'
 stop
 ;-------------------- AIA Fitting (minus median)--------------------------
 

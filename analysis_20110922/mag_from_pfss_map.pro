@@ -1,5 +1,8 @@
 pro mag_from_pfss_map
 
+; Final version of code to get magnetic field for Alfven velocity calculation
+; in Nat Phys paper. 8-aug-2013
+
 ; Get the magnetic field at a particular position
 
 ; Use the height of 75 MHz derived in height_from_ensity_map.pro (1.29 Rsun at 15 degrees
@@ -35,7 +38,7 @@ FOR i=190, 225 DO BEGIN
 
 	window,1
 	plot, rsun, b_profile, /ylog
-	r = 1.18;1.28 ;Choose height
+	r = 1.33;1.27 ;Choose height
 	B = interpol(b_profile, rsun, r)
 	n = freq2dens(75e6)
 	va = B/sqrt(4.0*!PI*n*!p_mass*1000.0*0.6)

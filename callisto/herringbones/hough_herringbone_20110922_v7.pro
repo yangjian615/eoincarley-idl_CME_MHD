@@ -1,4 +1,4 @@
-pro hough_herringbone_20110922_v7,angle1,angle2,normal_back, PLOT_HOUGH=plot_hough
+pro hough_herringbone_20110922_v7, angle1,angle2, normal_back, PLOT_HOUGH=plot_hough
 
 ;v5 first finds all bursts for a particular frequency slice and then succesively moves onto the
 ;next frequencies. Need to do it the other way around e.g., get the first peak and trace this peak 

@@ -38,10 +38,10 @@ restore,'new_mid_data_bg.sav'
 t1_bs = anytim(file2time('20110922_103800'),/utim)
 t2_bs = anytim(file2time('20110922_105800'),/utim)
 
-spectro_plot, smooth(low_data_bg,3) > (-30.0) < 100.0, low_times, lfreq, /xs, ystyle=4, $
-xr=[t1_bs,t2_bs], yr=[100,20], yticks=7, yminor=2, $
-xticklen=-0.01, yticklen=-0.01, ytitle=' ', $
-position=[xleft, 0.68, xright, 0.85], /noerase, xtitle=' '
+spectro_plot, smooth(low_data_bg,3) > (-20.0) < 40.0, low_times, lfreq, /xs, /ys, $
+xr=[t1_bs,t2_bs], yr=[100,13], yticks=4, yminor=2, $
+xticklen=-0.01, yticklen=1, ytitle=' ', $
+position=[xleft, 0.68, xright, 0.85], /noerase, xtitle=' ', ytickname=[' ', ' ', ' ', ' ', ' ' ]
 vline,tline
 
 

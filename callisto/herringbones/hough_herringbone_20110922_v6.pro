@@ -1,4 +1,4 @@
-pro hough_herringbone_20110922_v6,angle1,angle2,normal_back, PLOT_HOUGH=plot_hough
+pro hough_herringbone_20110922_v6, angle1, angle2, normal_back, PLOT_HOUGH=plot_hough
 
 ;v5 first finds all bursts for a particular frequency slice and then succesively moves onto the
 ;next frequencies. Need to do it the other way around e.g., get the first peak and trace this peak 
@@ -96,7 +96,7 @@ FOR k=n_elements(freq_set)-1, 0, -1 DO BEGIN
 			;wset,8
 			;utplot,time_set,data_clip[*,f_slice]/max(data_clip[*,f_slice]),/xs,/ys,charsize=1.5
 			
-			wset,5
+			window,5
 			intensity = normal_back[*,f_slice]
 			utplot,time_set[*],intensity,/xs,/ys,psym=4,ytitle='Intesnity',charsize=1.5
 			oplot,time_set[*],intensity,color=240.0
@@ -126,7 +126,7 @@ FOR k=n_elements(freq_set)-1, 0, -1 DO BEGIN
 		!p.color=255
 		!p.background=0
 		stretch,255,60
-		wset,1
+		window, 1, xs=1200, ys=600
 		spectro_plot,(bytscl(constbacksub(data_raw,/auto),-20,200)), times, freq, $
 			/ys, ytitle='!6Frequency [MHz]', yticks=5, yminor=4, yr = [freq[f1_index],freq[f2_index]], $
 			xrange=[times[t1_index],times[t2_index]], /xs, xtitle='Start time:'+anytim(times[t1_index],/yoh),$
@@ -164,7 +164,7 @@ plots,burst_times, freq_set, psym=1, color=230, symsize=2
 
 
 ;**************PLOT ALL DATA POINTS FOUND************
-	loadct,9
+	loadct,1
 	!p.color=255
 	!p.background=0
 	stretch,255,60
@@ -173,10 +173,10 @@ plots,burst_times, freq_set, psym=1, color=230, symsize=2
 		/ys, ytitle='!6Frequency [MHz]', yticks=5, yminor=4, yr = [freq[f1_index],freq[f2_index]], $
 		xrange=[times[t1_index],times[t2_index]], /xs, xtitle='Start time:'+anytim(times[t1_index],/yoh),$
 		charsize=1.5
-	loadct,39
+	set_line_color
 	
 	FOR i=0,n_elements(freq_set)-1 do begin
-	    plots,peak_time_freq[i,1:99], peak_time_freq[i,0.0], color=230,psym=1,symsize=0.3
+	    plots,peak_time_freq[i,1:99], peak_time_freq[i,0.0], color=3, psym=1, symsize=1
 	ENDFOR
 ;******************************************************
 
@@ -207,13 +207,12 @@ time = cumu_t[j]
 	FOR i=0.,n_elements(wtd)-1 DO BEGIN
   		IF wtd[i] gt time THEN p[j] = p[j]+1.0
 	ENDFOR
-	
 ENDFOR
 index_gt = where(p gt 0.0)
 
 plot, cumu_t[index_gt], p[index_gt], $
 charsize=1.5,ytitle='No. Burst > '+Greek('delta', /CAPITAL)+' t',$
-xtitle=Greek('delta', /CAPITAL)+' t',xstyle=1,yr=[0.0,150.0],ystyle=1,$
+xtitle=Greek('delta', /CAPITAL)+' t',xstyle=1,yr=[0.0,80.0],ystyle=1,$
 psym=10
 
 
@@ -239,7 +238,6 @@ loadct,39
 !p.color=0
 !p.background=255
 oplot,x,pois*n_elements(times_from_interp),color=240,thick=2;*n_elements(times_from_interp)
-stop
 
 END
 

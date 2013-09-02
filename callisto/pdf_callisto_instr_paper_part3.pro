@@ -27,30 +27,33 @@ loadct,39
 !p.background=255
 !p.color=0
 utplot,goes_data[0,*],goes_data[1,*],/ylog,xr=[xstart,xend],$
-/xs,thick=1,yrange=[1e-9,1e-3],psym=3,xtitle='Start Time (2011-Sep-22 10:00:00 UT)',$
+/xs,thick=4,yrange=[1e-7,1e-3],psym=3,xtitle='Start Time (2011-Sep-22 10:00:00 UT)',$
 position=[0.07,0.6,0.95,0.97]
-oplot,goes_data[0,*],goes_data[1,*],color=245
+oplot,goes_data[0,*],goes_data[1,*],color=245, thick=4
 
+angstrom = '!6!sA!r!u!9 %!6!n' 
 xyouts,0.02, 0.75, 'Watts m!U-2!N',/normal,orientation=90
-axis,yaxis=1,ytickname=[' ','A','B','C','M','X',' ']
-oplot,goes_data[0,*],goes_data[2,*],color=80,thick=1
-legend, ['GOES15 0.1-0.8 nm','GOES15 0.05-0.4 nm'],$
-linestyle=[0,0], color=[245,80], box=0,pos=[0.07,0.96],/normal
+axis,yaxis=1,ytickname=[' ','C','M','X',' ']
+oplot,goes_data[0,*],goes_data[2,*],color=80,thick=4
+legend, ['GOES15 1-8 '+angstrom,'GOES15 0.5-4 '+angstrom],$
+linestyle=[0,0], color=[245,80], box=0,pos=[0.07,0.96], /normal
 
 loadct,0
-i_gen = dindgen(1001)*((1.0e-3 - 1.0e-9)/1000)+1.0e-9
+i_gen = dindgen(1001)*((1.0e-3 - 1.0e-7)/1000)+1.0e-7
 tcon = anytim(file2time('20110922_103900'),/utim)
 plots,tcon,i_gen,linestyle=2
-i_gen = dindgen(1001)*((1.0e-3 - 1.0e-9)/1000)+1.0e-9
+i_gen = dindgen(1001)*((1.0e-3 - 1.0e-7)/1000)+1.0e-7
 tcon = anytim(file2time('20110922_104500'),/utim)
+set_line_color
 plots,tcon,i_gen,linestyle=2
+
 plots,[0.07,0.355],[0.50,0.6],/normal,linestyle=2
 plots,[0.90,0.4],[0.50,0.6],/normal,linestyle=2
-plots,goes_data[0,*],1e-8,thick=0.2,color=200
-plots,goes_data[0,*],1e-7,thick=0.2,color=200
-plots,goes_data[0,*],1e-6,thick=0.2,color=200
-plots,goes_data[0,*],1e-5,thick=0.2,color=200
-plots,goes_data[0,*],1e-4,thick=0.2,color=200
+;plots,goes_data[0,*],1e-8,thick=3,color=0
+;plots,goes_data[0,*],1e-7,thick=3,color=0
+plots,goes_data[0,*],1e-6,thick=3,color=0
+plots,goes_data[0,*],1e-5,thick=3,color=0
+plots,goes_data[0,*],1e-4,thick=3,color=0
 
 
 
@@ -64,10 +67,10 @@ spectro_plot, constbacksub(z,/auto) >(-10), x, y, $
  /xs, /ys,ytitle='!6Frequency [MHz]',$
 yr=[90,10], yticks=8, yminor=2,$
 xrange='2011-sep-22 '+['10:39:00','10:45:00'],charsize=1,$
-xtitle='!6Start Time (2011-Sep-22 10:39:00 UT)',position=[0.07,0.1,0.90,0.5]
+xtitle='!6Start Time (2011-Sep-22 10:39:00 UT)',position=[0.07,0.1,0.95,0.5]
 
-color_key, range = [ -10, max(constbacksub(z,/auto)) ], ysize=-0.5, barwidth = 0.2,$
-charsize=1.0, title='Intensity (DNs)'
+;color_key, range = [ -10, max(constbacksub(z,/auto)) ], ysize=-0.5, barwidth = 0.2,$
+;charsize=1.0, title='Intensity (DNs)'
 
 set_line_color
 xyouts,0.09, 0.28, 'F',/normal,charsize=2,charthick=10, color = 0
@@ -75,6 +78,9 @@ xyouts,0.09, 0.28, 'F',/normal,charsize=2,charthick=3,color=1
 
 xyouts,0.13, 0.18, 'H',/normal,charsize=2,charthick=10, color = 0
 xyouts,0.13, 0.18, 'H',/normal,charsize=2,charthick=3,color=1
+
+xyouts, 0.08, 0.47, 'RSTO CALLISTO',/normal, charsize=1.5, charthick=10, color=0
+xyouts, 0.08, 0.47, 'RSTO CALLISTO',/normal, charsize=1.5, charthick=3, color=1
 
 
 ;loadct,5

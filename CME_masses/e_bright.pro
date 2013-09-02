@@ -13,8 +13,9 @@ function e_bright, toggle=toggle
 loadct,0
 IF keyword_set(toggle) THEN BEGIN
 	set_plot,'ps'
-	device, filename='e_brightness.ps', /color,/inches,/portrait,/encapsulate,$
-	xsize=10,ysize=8;
+	!p.font=0
+	device, filename='e_brightness.ps', /color, /inches, /portrait, /encapsulate, $
+	xsize=10, ysize=8, /helvetica
 ENDIF ELSE BEGIN
 window,0
 ENDELSE
@@ -32,7 +33,7 @@ array(1,*) = array(1,*)/b
 
 theta = greek('theta')
 plot, array(0,*), array(1,*), linestyle=0, xtitle='Angle from sky-plane ('+theta+')',$
-ytitle='Normalised CME Brightness', color=0
+ytitle='Normalised electron brightness', color=0
 
 IF keyword_set(toggle) THEN BEGIN
 	device,/close

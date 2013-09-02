@@ -1,5 +1,9 @@
 pro create_composite_img_v6, toggle=toggle
 
+;--------------------------------------------------------------------------;
+;	   Code to produce Supplementary Movie 1 for final draft of paper      ;
+;
+
 ; Similar to create_composite_img but now with AIA. Intended use: make movie of AIA and NRH
 ; create_composite_img still useful for plotting LASCO, NRH, SWAP
 ; v3 the NRH map creation is functionalised in this version 
@@ -11,13 +15,17 @@ pro create_composite_img_v6, toggle=toggle
 ; v6 plot the new dynamic spectal data with SWAVES, NRH, CALLISTO etc.
 
 ;Device, RETAIN=2
+tcd_stamp, tcd_crest_small
+
+
+
 t1 = anytim(file2time('20110922_103500'),/utim)
 t2 = anytim(file2time('20110922_111000'),/utim)
 
  
 ;***************  		C2 DATA		   **********************;
 ;					  READ C2 DATA
-cd,'/Users/eoincarley/Data/22sep2011_event/LASCO_C2/L0.5/L1'
+cd,'~/Data/22sep2011_event/LASCO_C2/L0.5/L1'
 files=findfile('*.fts')
 file = files[4]
 c2_data = readfits(file,c2_hdr) 
@@ -37,7 +45,7 @@ suncenter = get_sun_center(hdr)
 
 
 ;           Read in the AIA pre image             ;
-cd,'/Users/eoincarley/Data/22sep2011_event/AIA'
+cd,'~/Data/22sep2011_event/AIA'
 aia_files = findfile('aia*.fits')
 read_sdo,aia_files[0], he_aia_pre, data_aia_pre
 
@@ -54,7 +62,7 @@ f = aia_files[where(ind.exptime gt 1.)]
 	tstart = anytim(anytim(t1,/utim),/yoh,/trun,/time_only)
 	tend   = anytim(anytim(t2,/utim),/yoh,/trun,/time_only)
 	freq = '1509'
-	cd,'/Users/eoincarley/data/22sep2011_event/nrh'
+	cd,'~/data/22sep2011_event/nrh'
 	print,'                       '
 	print,'Reading NRH data between times: '+tstart+' and '+ tend
 	print,'                       '
@@ -72,9 +80,9 @@ f = aia_files[where(ind.exptime gt 1.)]
 	!p.charsize=1.0
 	
 
-FOR i=10, 110, 2 DO BEGIN ;n_elements(f)-1 DO BEGIN
+FOR i=10, 110, 1 DO BEGIN ;n_elements(f)-1 DO BEGIN
 	print,i
-	cd,'/Users/eoincarley/Data/22sep2011_event/AIA'
+	cd,'~/Data/22sep2011_event/AIA'
 
 	
 	read_sdo, f[i], he_aia, data_aia
@@ -152,6 +160,18 @@ FOR i=10, 110, 2 DO BEGIN ;n_elements(f)-1 DO BEGIN
 	set_line_color
 	plot_helio, he_aia.date_obs, /over, gstyle=0, gthick=3.0, gcolor=1, grid_spacing=15.0
 	
+	radius=2.1
+	loadct,0
+	points = (FINDGEN(1001)*(213.9 -142.3)/1000.0 ) + 142.3
+	arcsec_per_rsun = 965.80252
+	x1 = 0.0 + radius*arcsec_per_rsun*COS(points*!Dtor)
+	y1 = 0.0 + radius*arcsec_per_rsun*SIN(points*!Dtor)
+	x2 = 0.0 + radius*arcsec_per_rsun*COS(points*!Dtor)
+	y2 = 0.0 + radius*arcsec_per_rsun*SIN(points*!Dtor)
+	set_line_color
+	plots, TRANSPOSE([[x1],[y1]]), /data, thick=10, color=70, linestyle=0
+	plots, TRANSPOSE([[x2],[y2]]), /data, thick=10, color=70, linestyle=0
+	
 
 	;-------------------           NRH DATA           ---------------------;
 	;					   Obtain closest NRH image  					   ;
@@ -169,6 +189,16 @@ FOR i=10, 110, 2 DO BEGIN ;n_elements(f)-1 DO BEGIN
 	charsize=0.7, /vertical, spacing=0.20, rotate=-45, title=' ', tcharsize=0.7, /right
 	set_line_color
 	xyouts, 0.592, 0.6, 'log!L10!N(T!LB!N [K])', orientation=270, /normal, color=1
+	
+	
+	;---------------------------------------;
+	;		   Add in tcd crest				;
+	;
+	;loadct,33
+	;DEVICE, DECOMPOSED = 1
+	loadct,0
+	TV, tcd_crest_small, 0.15, 0.15, xsize=3.0, ysize=3.0/6.81592, true=1, /inches
+	
 	
 	IF keyword_set(toggle) THEN BEGIN
 		device,/close
@@ -218,6 +248,25 @@ END
 
 
 
+pro tcd_stamp, tcd_crest_small
 
+cd,'~/Data/22sep2011_event/'
+file = 'TCD-logo-wide.jpg'
+queryStatus = QUERY_IMAGE(file, imageInfo)
+tcd_crest = READ_IMAGE(file)
+x = 2000
+y = x/6.8
+tcd_crest_small = fltarr(3, x, y)
+
+tcd_crest1 = transpose(transpose(tcd_crest[0,*,*]))
+tcd_crest2 = transpose(transpose(tcd_crest[1,*,*]))
+tcd_crest3 = transpose(transpose(tcd_crest[2,*,*]))
+
+tcd_crest_small[0,*,*] = congrid(tcd_crest1, x, y)
+tcd_crest_small[1,*,*] = congrid(tcd_crest2, x, y)
+tcd_crest_small[2,*,*] = congrid(tcd_crest3, x, y)
+
+tcd_crest_small = tcd_crest
+END
 
 

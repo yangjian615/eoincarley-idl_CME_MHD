@@ -6,13 +6,24 @@ pro find_height_uncertainty
 ; Firstly just do it for no error in the density values themselves i.e.
 ; just get uncertainty in the position angle range due to density variation
 ; in the corona
-find_max_min_heights, 0.0, av_height
-stop
+
+;------------------------------------------------------;
+; Results of this code used in Nat Phys final draft (8-aug-2013)
+;------------------------------------------------------;
+
+find_max_min_heights, 0.0, av_height ;average height from this used in paper
+
 ; No subtract the uncertainty in density measurement itself
-find_max_min_heights, -0.1, av_height
+find_max_min_heights, -0.15, av_height ;minimum height from this used in paper 
 
 ; No add the uncertainty in density measurement itself
-find_max_min_heights, 0.1, av_height
+find_max_min_heights, 0.15, av_height   ;maximum height from this used in paper 
+stop
+
+
+window,1
+window,3
+window,4
 
 ;Produce a plot of error in height as a function of error in density measurement
 maxh_array = dblarr(50)
@@ -25,12 +36,34 @@ FOR j=0.0, 49.0 DO BEGIN
 ENDFOR
 
 err = (maxh_array - minh_array)
-window,4
-plot, dindgen(50), maxh_array, xtitle='Density measurement uncertainty (%)',$
-yr=[1,1.5], ytitle='Max R, Min R'
+wset,4
 
-oplot, dindgen(50), minh_array, linestyle=1
+;-------------------------------------------------------------------------;
+; Solid line: The maximum height at which 150 MHz occurs in a region 
+; 10-45 deg below the equator when 'error' is added onto the density 
+; measurement.
+; 
+; Dashed line: The minimum height at which 150 MHz occurs in a region 
+; 10-45 deg below the equator when 'error' is subtracted onto the density 
+; measurement.
+;
+;
+plot, dindgen(50)/2, maxh_array, xtitle='Density measurement uncertainty (%)',$
+yr=[1,1.5], title='Max and min height of 75 MHz in PA of 100-135 deg',$
+ytitle = 'Height (Rsun)'
 
+
+oplot, dindgen(50)/2, minh_array, linestyle=3
+
+h = dblarr(50)
+h[*]=1.1
+oplot, dindgen(50), h, linestyle=1
+h[*]=1.2
+oplot, dindgen(50), h, linestyle=1
+h[*]=1.3
+oplot, dindgen(50), h, linestyle=1
+h[*]=1.4
+oplot, dindgen(50), h, linestyle=1
 STOP
 
 END
@@ -60,7 +93,7 @@ rsun_arcsec = get_solar_radius(hdr)
 ;---------------------------------------------------;
 ;	Get line profiles between two angles degrees lat
 ;---------------------------------------------------;
-window,1
+wset,1
 plot_image, alog10(CAR_DEN_ALL.data)
 xcen = 300.0
 ycen = 300.0
@@ -85,7 +118,7 @@ ENDFOR
 freq = 75e6
 n = freq2dens(freq)
 
-window,3
+wset,3
 plot_image, alog10(prof_array)
 
 
